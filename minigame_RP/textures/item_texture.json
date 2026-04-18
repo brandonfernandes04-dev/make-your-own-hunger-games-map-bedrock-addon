@@ -1,0 +1,11 @@
+{
+    "resource_pack_name": "Minigame Creator Tools",
+    "texture_data": {
+        "b_minigames:join_game_item": {
+         "textures": "textures/system_items/join_game_item" 
+        },
+        "b_minigames:map_maker": {
+         "textures": "textures/system_items/map_maker"
+        }
+    }
+}

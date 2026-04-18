@@ -1,0 +1,22 @@
+{
+    "format_version": "1.10.0",
+    "minecraft_client_entity": {
+        "description": {
+            "identifier": "b_minigames:brando",
+            "materials": {
+                "default": "entity"
+            },
+            "textures": {
+                "default": "textures/npcs/brando"
+            },
+            "geometry": {
+                "default": "geometry.brando"
+            },
+            "spawn_egg": {
+                "overlay_color": "#000000",
+                "base_color": "#7a0198"
+            },
+            "render_controllers": ["controller.render.brando"]
+        }
+    }
+}
