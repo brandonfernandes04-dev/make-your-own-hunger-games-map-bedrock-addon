@@ -1,0 +1,19 @@
+{
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/potions/choose_potions/drinking_potions.json",
+                    "weight": 10
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/potions/choose_potions/splash_potions.json",
+                    "weight": 10
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,124 @@
+{
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/weapons/high_tier_weapons/high_tier_swords.json",
+                    "weight": 10
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/weapons/high_tier_weapons/high_tier_axes.json",
+                    "weight": 10
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/weapons/high_tier_weapons/high_tier_bows.json",
+                    "weight": 10
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 1
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/armor/high_tier_armor.json",
+                    "weight": 4
+                }
+            ]
+        },
+        {
+            "rolls": 2,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 1
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/other/arrows.json",
+                    "weight": 6
+                }
+            ]
+        },
+        {
+            "rolls": 2,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 1
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/food/food.json",
+                    "weight": 6
+                }
+            ]
+        },
+        {
+            "rolls": 2,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 2
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/potions/potions.json",
+                    "weight": 4
+                }
+            ]
+        },
+        {
+            "rolls": 2,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 2
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/other/special.json",
+                    "weight": 4
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 4
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:shield",
+                    "weight": 4
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:shield",
+                    "weight": 4,
+                    "functions": [
+                        {
+                            "function": "specific_enchant",
+                            "enchants": [
+                                {
+                                    "id": "unbreaking",
+                                    "level": 3
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

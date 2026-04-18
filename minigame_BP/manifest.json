@@ -1,0 +1,36 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Mini Games Behavior",
+    "description": "Behavior pack for the minigame realm.",
+    "uuid": "8ac0c306-d20e-4e6d-8b63-f59d02272022",
+    "version": [1, 0, 1],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "description": "Data module",
+      "type": "data",
+      "uuid": "72f0cb9e-3eea-4d0b-a2be-3875f6391f6d",
+      "version": [1, 0, 0]
+    },
+    {
+      "description": "Server-side script module",
+      "type": "script",
+      "language": "javascript",
+      "entry": "scripts/main.js",
+      "uuid": "9b21208c-afb1-4c03-b596-53e84f2da043",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+    "module_name": "@minecraft/server",
+    "version": "2.6.0"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "2.0.0"
+    }
+  ]
+}

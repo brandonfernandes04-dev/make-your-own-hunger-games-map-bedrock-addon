@@ -1,0 +1,69 @@
+{
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_sword", 
+                    "weight": 20
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_sword",
+                    "weight": 17
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_sword",
+                    "weight": 12
+                },
+                {
+                    "type": "item",
+                    "name":"minecraft:iron_sword",
+                    "weight": 12,
+                    "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 10,
+                                "max": 25
+                            },
+                            "treasure": true
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name":"minecraft:diamond_sword",
+                    "weight": 10,
+                    "functions":[
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 10,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name":"minecraft:netherite_sword",
+                    "weight": 5,
+                    "functions":[
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 10,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

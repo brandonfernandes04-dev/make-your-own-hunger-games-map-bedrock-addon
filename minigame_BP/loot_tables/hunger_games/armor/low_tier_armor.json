@@ -1,0 +1,193 @@
+{
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                 {
+                    "type": "empty",
+                    "weight": 100
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:leather_helmet",
+                    "weight": 70
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:chainmail_helmet",
+                    "weight": 40
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:leather_helmet",
+                    "weight": 30,
+                    "functions": [
+                     {
+                        "function": "enchant_with_levels",
+                        "levels": {
+                           "min": 1,
+                           "max": 5
+                        }
+                     }
+                   ]
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:chainmail_helmet",
+                    "weight": 15,
+                    "functions": [
+                     {
+                        "function": "enchant_with_levels",
+                        "levels": {
+                           "min": 1,
+                           "max": 5
+                        }
+                     }
+                   ]
+                 }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                 {
+                    "type": "empty",
+                    "weight": 100
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:leather_chestplate",
+                    "weight": 70
+                 },
+                  {
+                    "type": "item",
+                    "name": "minecraft:chainmail_chestplate",
+                    "weight": 40
+                  },
+                  {
+                    "type": "item",
+                    "name": "minecraft:leather_chestplate",
+                    "weight": 30,
+                    "functions": [
+                     {
+                        "function": "enchant_with_levels",
+                        "levels": {
+                           "min": 1,
+                           "max": 5
+                        }
+                     }
+                   ]
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:chainmail_chestplate",
+                    "weight": 15,
+                    "functions": [
+                     {
+                        "function": "enchant_with_levels",
+                        "levels": {
+                           "min": 1,
+                           "max": 5
+                        }
+                     }
+                   ]
+                 }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                 {
+                    "type": "empty",
+                    "weight": 100
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:leather_leggings",
+                    "weight": 70
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:chainmail_leggings",
+                    "weight": 40
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:leather_leggings",
+                    "weight": 30,
+                    "functions": [
+                     {
+                        "function": "enchant_with_levels",
+                        "levels": {
+                           "min": 1,
+                           "max": 5
+                        }
+                     }
+                   ]
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:chainmail_leggings",
+                    "weight": 15,
+                    "functions": [
+                     {
+                        "function": "enchant_with_levels",
+                        "levels": {
+                           "min": 1,
+                           "max": 5
+                        }
+                     }
+                   ]
+                 }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                 {
+                    "type": "empty",
+                    "weight": 100
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:leather_boots",
+                    "weight": 70
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:chainmail_boots",
+                    "weight": 40
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:leather_boots",
+                    "weight": 30,
+                    "functions": [
+                     {
+                        "function": "enchant_with_levels",
+                        "levels": {
+                           "min": 1,
+                           "max": 5
+                        }
+                     }
+                   ]
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:chainmail_boots",
+                    "weight": 15,
+                    "functions": [
+                     {
+                        "function": "enchant_with_levels",
+                        "levels": {
+                           "min": 1,
+                           "max": 5
+                        }
+                     }
+                   ]
+                 }
+                 
+            ]
+        }
+    ]
+}

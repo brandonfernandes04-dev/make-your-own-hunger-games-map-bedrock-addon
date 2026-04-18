@@ -1,0 +1,234 @@
+{
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 21 //instant health 1
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 7,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 22 //instant health 2
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 28 //regeneration 1 normal time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 7,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 30 //regeneration 2 normal time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 14 //swiftness 1 nomral time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 8,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 16 //swiftness 2 normal time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 7,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 23 //harming 1
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 4,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 24 //harming 2
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 8,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 25 //posion 1 normal time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 4,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 27 //posion 2 normal time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 8,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 34 //weakness 1 normal time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 6,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 35 //weakness 1 long time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 4,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 36 //decay also known as wither 1 normal time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 8,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 17 //slowness 1 normal time
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 6,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": 1
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 42 //slowness 2 normal time
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

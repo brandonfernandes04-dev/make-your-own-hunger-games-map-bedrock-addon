@@ -1,0 +1,220 @@
+{
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                 {
+                    "type": "empty",
+                    "weight": 100
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:iron_helmet",
+                    "weight": 50
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:diamiond_helmet",
+                    "weight": 40
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:netherite_helmet",
+                    "weight": 20
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:diamiond_helmet",
+                    "weight": 15,
+                     "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 1,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:netherite_helmet",
+                    "weight": 10,
+                     "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 1,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                 }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                 {
+                    "type": "empty",
+                    "weight": 100
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:iron_chestplate",
+                    "weight": 50
+                 },
+                  {
+                    "type": "item",
+                    "name": "minecraft:diamond_chestplate",
+                    "weight": 40
+                  },
+                  {
+                    "type": "item",
+                    "name": "minecraft:netherite_chestplate",
+                    "weight": 20
+                 },
+                  {
+                    "type": "item",
+                    "name": "minecraft:diamond_chestplate",
+                    "weight": 15,
+                     "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 1,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:netherite_chestplate",
+                    "weight": 10,
+                     "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 1,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                 }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                 {
+                    "type": "empty",
+                    "weight": 100
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:iron_leggings",
+                    "weight": 50
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:diamond_leggings",
+                    "weight": 40
+                  },
+                  {
+                    "type": "item",
+                    "name": "minecraft:netherite_leggings",
+                    "weight": 20
+                 },
+                  {
+                    "type": "item",
+                    "name": "minecraft:diamond_leggings",
+                    "weight": 15,
+                     "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 1,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                  },
+                  {
+                    "type": "item",
+                    "name": "minecraft:netherite_leggings",
+                    "weight": 10,
+                     "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 1,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                 }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                 {
+                    "type": "empty",
+                    "weight": 100
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:iron_boots",
+                    "weight": 50
+                 },
+                 {
+                    "type": "item",
+                    "name": "minecraft:diamond_boots",
+                    "weight": 40
+                  },
+                  {
+                    "type": "item",
+                    "name": "minecraft:netherite_boots",
+                    "weight": 20
+                 },
+                  {
+                    "type": "item",
+                    "name": "minecraft:diamond_boots",
+                    "weight": 20,
+                     "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 1,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                  },
+                  {
+                    "type": "item",
+                    "name": "minecraft:netherite_boots",
+                    "weight": 10,
+                     "functions":[
+                        {
+                            "function": "enchant_with_levels", 
+                            "levels": {
+                                "min": 1,
+                                "max": 20
+                            },
+                            "treasure": true
+                        }
+                    ]
+                 }
+            ]
+        }
+    ]
+}

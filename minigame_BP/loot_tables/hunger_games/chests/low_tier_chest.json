@@ -1,0 +1,89 @@
+{
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/weapons/low_tier_weapons/low_tier_swords.json",
+                    "weight": 10
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/weapons/low_tier_weapons/low_tier_axes.json",
+                    "weight": 10
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/weapons/low_tier_weapons/low_tier_bows.json",
+                    "weight": 10
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 1
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/armor/low_tier_armor.json",
+                    "weight": 4
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 1
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/other/arrows.json",
+                    "weight": 4
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 1
+                },
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/hunger_games/food/food.json",
+                    "weight": 6
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries":[
+                {
+                    "type": "empty",
+                    "weight": 4
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:shield",
+                    "weight": 4,
+                    "functions": [
+                        {
+                            "function": "set_damage",
+                            "damage": {
+                                "min": 0.75,
+                                "max": 0.98
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
