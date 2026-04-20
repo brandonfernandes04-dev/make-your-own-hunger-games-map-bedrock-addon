@@ -37,9 +37,9 @@ const mapMaker = new ModalFormData() //form that allows the player to make their
     .title("Map Maker")
     .header("Add the coordinates/name into the field(s) as prompted.\nBe sure to follow the format shown")
     .textField("Name:", "Enter the map name")
-    .textField("Spawns:", '"x, y, z", "x, y, z", "x, y, z"')
-    .textField("Barriers:", '"x, y, z", "x, y, z", "x, y, z"')
-    .textField("Chests:", '"x, y, z", "x, y, z", "x, y, z"')
+    .textField("Spawns:", '[x, y, z], [x, y, z], [x, y, z]')
+    .textField("Barriers:", '[x, y, z], [x, y, z], [x, y, z]')
+    .textField("Chests:", '[x, y, z], [x, y, z], [x, y, z]')
     .dropdown("Dimension:", ["Overworld", "Nether", "End"])
     .slider('Number of minutes game should run for this map:', 1, 30)
     .slider('Max number of players:', 2, 20)
@@ -79,7 +79,7 @@ world.afterEvents.itemUse((event) => { //Handels showing the forms starting from
                 const dimension = response.formValues[4]
                 const numOfTicks = response.formValues[5] * 1200
                 const numOfPlayers = response.formValues[6]
-                const dataString = `{"spawns": [${spawns}], "barriers": [${barriers}], "chests": [${chests}], "dimension": "${dimension}", numOfTicks: ${numOfTicks}, numOfPlayers: ${numOfPlayers}` //Creates a string out of the data given on the from for lookup later when the map in initialized for gameplay
+                const dataString = `{"spawns": [${spawns}], "barriers": [${barriers}], "chests": [${chests}], "dimension": "${dimension}", "numOfTicks": ${numOfTicks}, "numOfPlayers": ${numOfPlayers}}` //Creates a string out of the data given on the from for lookup later when the map in initialized for gameplay
                 const createdMap = new Map(name, dataString); // Creates a new instnace of the Map class and passes in the name of the Map as well as the data string created from the form reponses
                 createdMap.save() //Saves the Map to the world dynamic properties for persistance when loading the world
                 Map.allMaps.push(createdMap) //cache map to static property 
