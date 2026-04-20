@@ -17,29 +17,29 @@ function startLobbyCount() { // starts game count down and calls funtions to set
         return
     }
 }
-function pickMap() {
+function pickMap() { //Returns an instance of a class from the static property allMaps in the class Map based on a random number
     const maps = Map.allMaps
     const numOfMaps = maps.length
     const randomNum = Math.floor(Math.random() * numOfMaps + 1)
-    const pickedMap = maps[randomNum - 1]
+    const pickedMap = maps[randomNum]
     return pickedMap
 }
 
-world.beforeEvents.itemUse.subscribe((event) => { //handles players queing for game calls pickMap() and startLobbyCount()
+world.beforeEvents.itemUse.subscribe((event) => { //handles players queing into the game by using the join game item then parses data from the data string provided by the returned Map given by the function pickMap() to start a game.
     const item = event.itemStack.typeId
     if (item === "b_minigames:join_game_item") {
         event.source.addTag("Ready")
         const players = world.getPlayers({tags: "Ready"});
         if (players.length > 2 && world.getDynamicProperty("lobby_count_started") === false) {
             startLobbyCount();
-            const map = pickMap()
-            const ParsedData = JSON.parse(map.mapData)
-            const name = map.name
-            const spawns = ParsedData.data.spawns
-            const barriers = ParsedData.data.barriers
-            const chests = ParsedData.data.chests
-            const dimension = ParsedData.data.dimension
-            const numOfPlayers = ParsedData.data.numOfPlayers
+            const map = pickMap();
+            const parsedData = JSON.parse(map.mapData); 
+            const name = map.name;
+            const spawns = parsedData.spawns;
+            const barriers = parsedData.barriers;
+            const chests = parsedData.chests;
+            const dimension = parsedData.dimension;
+            const numOfTicks = parsedData.numOfPlayers;
             //start game here using data to perform relevant actions
 
         };
