@@ -4,6 +4,9 @@
         "b_minigames:join_game_item": {
          "textures": "textures/system_items/join_game_item" 
         },
+        "b_minigames:start_game_item": {
+         "textures": "textures/system_items/start_game_item" 
+        },
         "b_minigames:map_maker": {
          "textures": "textures/system_items/map_maker"
         }
