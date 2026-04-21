@@ -1,14 +1,13 @@
 import {world, system } from "@minecraft/server"
 import { Map } from "./map_making"
 
-function startLobbyCount( players ) { // starts game count down and calls funtions to set everything up called from world.beforeEvents.itemUse.Subscribe (player que handler)
-    world.setDynamicProperty("lobby_count_started", true)
+function startLobbyCount( players ) { // start game count down 
     const Players = players
     let count = 31;
     system.runInterval(() => {
         count -- 
         Players.forEach(player => {
-            player.onScreenDisplay.setActionBar(count)
+            player.onScreenDisplay.setActionBar(`Game begins: ${count}`)
         });
     }, 20);
     if (count < 1) {
@@ -17,7 +16,7 @@ function startLobbyCount( players ) { // starts game count down and calls funtio
         return
     }
 }
-function pickMap(numOfPlayers) { //Returns an instance of a class from the static property allMaps in the class Map based on a random number
+function pickMap(numOfPlayers) { //Returns an instance of a class from the static property allMaps in the class Map based on a random number after ensuring the map is capable of handling the number of players in the que
     const allMaps = Map.allMaps
     const validMaps = allMaps.filter(map => {
         const data = JSON.parse(map.mapData)
@@ -29,6 +28,10 @@ function pickMap(numOfPlayers) { //Returns an instance of a class from the stati
     return pickedMap
 }
 
+function setBarriers(barriers, dimension) { //Need to learn about Chunk Loading and how to do it from a script
+    
+}
+
 world.afterEvents.itemUse.subscribe((event) => { //handles players queing into the game by using the join game item
     const item = event.itemStack.typeId
     if (item === "b_minigames:join_game_item") {
@@ -37,21 +40,25 @@ world.afterEvents.itemUse.subscribe((event) => { //handles players queing into t
     else return;
 })
 
-world.afterEvents.itemUse.subscribe((event) => { //handles starting the game when any player uses the start game item and there is more than 1 player ready in the lobby.
+world.afterEvents.itemUse.subscribe(async (event) => { //handles starting the game when any player uses the start game item and there is more than 1 player ready in the lobby.
     const item = event.itemStack.typeId
-    if (item === "b_minigames:start_match_item") {
+    if (item === "b_minigames:start_match_item" && world.getDynamicProperty("lobby_count_started") === false && world.getDynamicProperty("game_active") === false) {
         const players = world.getPlayers({tags: "Ready"});
-        if (players.length > 2 && world.getDynamicProperty("lobby_count_started") === false && world.getDynamicProperty("game_active") === false) {
-            startLobbyCount(players);
-            const map = pickMap(players.length);
+        if (players.length > 2) {
+            world.setDynamicProperty("lobby_count_started", true)
+            world.sendMessage('Picking Map...')
+            const map = await pickMap(players.length);
             const parsedData = JSON.parse(map.mapData); 
             const dimension = parsedData.dimension;
             const name = map.name;
             world.sendMessage(`Next map: ${name}`) //Tells the players what map they will be playing next
             const barriers = parsedData.barriers;
-            setBarriers(barriers, dimension) //need to write
+            world.sendMessage('Setting Barriers...')
+            await setBarriers(barriers, dimension) //need to write
             const chests = parsedData.chests;
-            fillChests(chests, dimension) //need to write
+            world.sendMessage('filling chests...')
+            await fillChests(chests, dimension) //need to write
+            await startLobbyCount(players);
             const spawns = parsedData.spawns;
             MovePlayers(spawns, dimension) //need to write
             const numOfTicks = parsedData.numOfTicks; //Create game timer using this data
