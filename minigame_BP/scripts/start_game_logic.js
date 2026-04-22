@@ -29,26 +29,56 @@ function pickMap(numOfPlayers) { //Returns an instance of a class from the stati
 }
 
 async function* setBarriers(barriers, dimension) {
-    for (let i = 0; i < barriers.length; ) {
-        const barrier = barriers[i]
-        const [x, y, z] = barrier
-        const isBarrierLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
-        if (!isBarrierLoaded) {
-           await TickingAreaManager.createTickingArea('working_area', {from: {x, y, z}, to: {x, y, z}})
-           dimension.setBlockType({x: x, y: y, z: z}, "minecraft:barrier")
-           yield;
-           const nextBarrierIndex = barriers[i++]
-           if (!nextBarrierIndex) return;
-           const [x2, y2, z2] = nextBarrierIndex
-           if(dimension.isChunkLoaded({x: x2, y: y2, z: z2})) {
-                dimension.setBlockType({x: x2, y: y2, z: z2}, "minecraft:barrier")
-                TickingAreaManager.removeTickingArea("working_area")
-                i += 2
-           }
-           else {i++; yield;}
+    const loadedSpaces = []
+    let spacesLoaded = 0
+    await TickingAreaManager.createTickingArea('working_area', {x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension})
+    for (let i = 0; i < barriers.length;) {
+        const [x, y, z] = barriers[i]
+        const isLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
+        if (isLoaded) {
+            loadedSpaces.push([x, y, z])
+            i++
+            spacesLoaded++
         }
-    }
+        if (!isLoaded) {
+            for (const loadedSpace of loadedSpaces) {
+                const [x2, y2, z2] = loadedSpace
+                dimension.setBlockType({x: x2, y: y2, z: z2}, "minecraft:barrier")
+                yield;
+            }
+            TickingAreaManager.removeTickingArea('working_area')
+            barriers.splice(0, spacesLoaded)
+            if (barriers.length > 1) {
+                await TickingAreaManager.createTickingArea('working_area', {x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension})
+                i = 0
+            }
+            else {dimension.setBlockType({x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension}, 'minecraft:barrier')}
+        }
+
+    } 
 }
+
+// async function* setBarriers(barriers, dimension) { //could be more efficent will probably rewrite
+//     for (let i = 0; i < barriers.length; ) {
+//         const barrier = barriers[i]
+//         const [x, y, z] = barrier
+//         const isBarrierLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
+//         if (!isBarrierLoaded) {
+//            await TickingAreaManager.createTickingArea('working_area', {from: {x, y, z}, to: {x, y, z}})
+//            dimension.setBlockType({x: x, y: y, z: z}, "minecraft:barrier")
+//            yield;
+//            const nextBarrierIndex = barriers[i++]
+//            if (!nextBarrierIndex) return;
+//            const [x2, y2, z2] = nextBarrierIndex
+//            if(dimension.isChunkLoaded({x: x2, y: y2, z: z2})) {
+//                 dimension.setBlockType({x: x2, y: y2, z: z2}, "minecraft:barrier")
+//                 TickingAreaManager.removeTickingArea("working_area")
+//                 i += 2
+//            }
+//            else {i++; yield;}
+//         }
+//     }
+// }
 
 world.afterEvents.itemUse.subscribe((event) => { //handles players queing into the game by using the join game item
     const item = event.itemStack.typeId
@@ -75,7 +105,7 @@ world.afterEvents.itemUse.subscribe(async (event) => { //handles starting the ga
             await system.runJob(setBarriers(barriers, dimension))
             const chests = parsedData.chests;
             world.sendMessage('filling chests...')
-            await fillChests(chests, dimension) //need to write
+            await ResetAndFillChests(chests, dimension) //need to write
             await startLobbyCount(players);
             const spawns = parsedData.spawns;
             MovePlayers(spawns, dimension) //need to write

@@ -59,7 +59,14 @@ const tutorialform = new MessageFormData() //Explanation of how to use the syste
 
 const credits = new MessageFormData() //credits for the Programmer and Map builder!
     .title('Credits')
-    .body('This addon was made with much care and effort by me (Brandon) It is my intent that people will use this addon to create memories with their friends as well form new friendships!\nThe maps that come included with this addon were made with dedication and talent by My friend Richie. If this addon helps you in any way consider helping others with your craft! Thank you!')
+    .body('This addon was made with much care and effort by me (Brandon) It is my intent that people will use this addon to create memories with their friends as well form new friendships!\nThe maps that come included with this addon were made with dedication and talent by My friend Richie. If this addon helps you in any way consider helping others with your craft! Thank you!');
+
+const chestLootForm = new ActionFormData()
+    .title('Set Chest Loot')
+    .button('Set chest to low level loot')
+    .button('Set chest to mid level loot')
+    .button('Set chest to high level loot')
+    .button('Erase this chest from Map');
 
 
 world.afterEvents.itemUse((event) => { //Handels showing the forms starting from directory from when a player uses the map manager item calls methods from Map class to save the information as a string that can later be parsed to grab relevant information
@@ -94,6 +101,25 @@ world.afterEvents.itemUse((event) => { //Handels showing the forms starting from
             case 2: tutorialform.show(player); break;
             case 3: credits.show(player); break;
            }
+        })
+    }
+})
+
+world.beforeEvents.playerInteractWithBlock.subscribe((event) => { //handles setting which tier of loot a chest will recieve during game initlization
+    const gamemode = event.player.getGameMode()
+    const block = event.block
+    if(gamemode === "Creative" && event.player.isSneaking === true && block.typeId === "minecraft:chest") {
+        chestLootForm.show(event.player).then(response => {
+            if(response.canceled) return;
+            switch(response) {
+                case 0: world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`, "low"); break;
+                case 1: world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`, "mid"); break;
+                case 2: world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`, "high"); break;
+                case 3: 
+                const chestExists = world.getDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`)
+                if (chestExists) {world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`)} 
+                else return;
+            }
         })
     }
 })
