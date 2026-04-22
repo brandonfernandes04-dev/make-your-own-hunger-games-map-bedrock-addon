@@ -1,4 +1,4 @@
-import {world, system } from "@minecraft/server"
+import {world, system, TickingAreaManager } from "@minecraft/server"
 import { Map } from "./map_making"
 
 function startLobbyCount( players ) { // start game count down 
@@ -28,8 +28,26 @@ function pickMap(numOfPlayers) { //Returns an instance of a class from the stati
     return pickedMap
 }
 
-function setBarriers(barriers, dimension) { //Need to learn about Chunk Loading and how to do it from a script
-    
+async function* setBarriers(barriers, dimension) {
+    for (let i = 0; i < barriers.length; ) {
+        const barrier = barriers[i]
+        const [x, y, z] = barrier
+        const isBarrierLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
+        if (!isBarrierLoaded) {
+           await TickingAreaManager.createTickingArea('working_area', {from: {x, y, z}, to: {x, y, z}})
+           dimension.setBlockType({x: x, y: y, z: z}, "minecraft:barrier")
+           yield;
+           const nextBarrierIndex = barriers[i++]
+           if (!nextBarrierIndex) return;
+           const [x2, y2, z2] = nextBarrierIndex
+           if(dimension.isChunkLoaded({x: x2, y: y2, z: z2})) {
+                dimension.setBlockType({x: x2, y: y2, z: z2}, "minecraft:barrier")
+                TickingAreaManager.removeTickingArea("working_area")
+                i += 2
+           }
+           else {i++; yield;}
+        }
+    }
 }
 
 world.afterEvents.itemUse.subscribe((event) => { //handles players queing into the game by using the join game item
@@ -54,7 +72,7 @@ world.afterEvents.itemUse.subscribe(async (event) => { //handles starting the ga
             world.sendMessage(`Next map: ${name}`) //Tells the players what map they will be playing next
             const barriers = parsedData.barriers;
             world.sendMessage('Setting Barriers...')
-            await setBarriers(barriers, dimension) //need to write
+            await system.runJob(setBarriers(barriers, dimension))
             const chests = parsedData.chests;
             world.sendMessage('filling chests...')
             await fillChests(chests, dimension) //need to write
