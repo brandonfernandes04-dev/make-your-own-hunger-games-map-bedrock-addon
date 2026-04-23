@@ -28,35 +28,72 @@ function pickMap(numOfPlayers) { //Returns an instance of a class from the stati
     return pickedMap
 }
 
-async function* setBarriers(barriers, dimension) {
+async function* setbarriers(barriers, dimension) {
+    if (barriers.length === 0) {
+        return world.sendMessage("All Barriers Set")
+    }
     const loadedSpaces = []
     let spacesLoaded = 0
     await TickingAreaManager.createTickingArea('working_area', {x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension})
-    for (let i = 0; i < barriers.length;) {
-        const [x, y, z] = barriers[i]
-        const isLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
-        if (isLoaded) {
-            loadedSpaces.push([x, y, z])
-            i++
-            spacesLoaded++
-        }
-        if (!isLoaded) {
-            for (const loadedSpace of loadedSpaces) {
-                const [x2, y2, z2] = loadedSpace
-                dimension.setBlockType({x: x2, y: y2, z: z2}, "minecraft:barrier")
+    if (barriers.length > 1) {
+        for (const barrier of barriers) {
+            const [x, y, z] = barrier
+            const isLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
+            if (isLoaded) {
+                loadedSpaces.push(barrier)
+                spacesLoaded ++
                 yield;
             }
-            TickingAreaManager.removeTickingArea('working_area')
-            barriers.splice(0, spacesLoaded)
-            if (barriers.length > 1) {
-                await TickingAreaManager.createTickingArea('working_area', {x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension})
-                i = 0
+            if (!isLoaded) {
+                break;
             }
-            else {dimension.setBlockType({x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension}, 'minecraft:barrier')}
         }
+        for (const loadedSpace of loadedSpaces) {
+            const [x, y, z] = loadedSpace
+            dimension.setBlockType({x: x, y: y, z: z}, 'minecraft:barrier')
+            yield;
+        }
+        barriers.splice(0, spacesLoaded)
+        TickingAreaManager.removeTickingArea('working_area')
+        yield;
+        return system.runJob(setbarriers(barriers, dimension))
+    }
+    if (barriers.length === 1) {
+        dimension.setBlockType({x: barriers[0][0], y: barriers[0][1], z: barriers[0][2]}, 'minecraft:barrier')
+        TickingAreaManager.removeTickingArea('working_area')
+    }
 
-    } 
 }
+
+// async function* setBarriers(barriers, dimension) {
+//     const loadedSpaces = []
+//     let spacesLoaded = 0
+//     await TickingAreaManager.createTickingArea('working_area', {x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension})
+//     for (let i = 0; i < barriers.length;) {
+//         const [x, y, z] = barriers[i]
+//         const isLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
+//         if (isLoaded) {
+//             loadedSpaces.push([x, y, z])
+//             i++
+//             spacesLoaded++
+//         }
+//         if (!isLoaded) {
+//             for (const loadedSpace of loadedSpaces) {
+//                 const [x2, y2, z2] = loadedSpace
+//                 dimension.setBlockType({x: x2, y: y2, z: z2}, "minecraft:barrier")
+//                 yield;
+//             }
+//             TickingAreaManager.removeTickingArea('working_area')
+//             barriers.splice(0, spacesLoaded)
+//             if (barriers.length > 1) {
+//                 await TickingAreaManager.createTickingArea('working_area', {x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension})
+//                 i = 0
+//             }
+//             else {dimension.setBlockType({x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension}, 'minecraft:barrier')}
+//         }
+
+//     } 
+// }
 
 // async function* setBarriers(barriers, dimension) { //could be more efficent will probably rewrite
 //     for (let i = 0; i < barriers.length; ) {
