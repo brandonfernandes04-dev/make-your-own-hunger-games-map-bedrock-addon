@@ -61,9 +61,68 @@ async function* setbarriers(barriers, dimension) {
     if (barriers.length === 1) {
         dimension.setBlockType({x: barriers[0][0], y: barriers[0][1], z: barriers[0][2]}, 'minecraft:barrier')
         TickingAreaManager.removeTickingArea('working_area')
+        return world.sendMessage("All Barriers Set")
     }
-
 }
+/**
+ * 
+ * @param {import { Container } from "@minecraft/server";} inventory 
+ * @param {*} items 
+ */
+function insertItems(inventory, items) {
+    let currentSlot = 0
+    for (const item of items) {
+        if (currentSlot < 26) {
+            inventory.setItem() //This is built in JS function instead of minecraft api method figure out why
+        }
+    }
+}
+
+async function* resetAndFillChests(chests, dimension) {
+    if (chests.length === 0) {
+        return world.sendMessage('All chests filled')
+    }
+    const loadedChests = []
+    let chestsLoaded = 0
+    await TickingAreaManager.createTickingArea('working_area', {x: chests[0][0], y: chests[0][1], z: chests[0][2], dimension: dimension})
+        for (const chest of chests) {
+            const [x, y, z] = chest
+            const isLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
+            if (isLoaded) {
+                loadedChests.push(chest)
+                chestsLoaded ++
+                yield;
+            }
+            if (!isLoaded) {
+                break;
+            }
+        }
+        for (const loadedChest of loadedChests) {
+            const [x, y, z] = loadedChest
+            const block = dimension.getBlock({x: x, y: y, z: z})
+            if (block.typeId === 'minecraft:chest') {
+                const inventory = block.getComponent('minecraft:inventory').container
+                inventory.clearAll()
+                const typeToFill = world.getDynamicProperty(loadedChest.toString())
+                const manager = world.getLootTableManager()
+                switch (typeToFill) {
+                    case "low":
+                        const lowLootTable = manager.getLootTable("hunger_games/chests/low_tier_chest")
+                        const lowLoot = manager.generateLootFromTable(lowLootTable)
+                        yield insertItems(inventory, lowLoot); break;
+                    case "mid":
+                        const midLootTable = manager.getLootTable("hunger_games/chests/mid_tier_chest")
+                        const midLoot = manager.generateLootFromTable(midLootTable)
+                        yield insertItems(inventory, midLoot); break;
+                    case "high":
+                        const highLootTable = manager.generateLootFromTable("hunger_games/chests/mid_tier_chest")
+                        const highLoot = manager.generateLootFromTable(highLootTable)
+                        yield insertItems(inventory, highLoot); break;
+                }
+            }
+            else {world.sendMessage(`A block that is not a chest was found at x: ${x}, y: ${y}, z: ${z} please be sure you have input the correct cooridinate.`)}
+        }
+    } 
 
 // async function* setBarriers(barriers, dimension) {
 //     const loadedSpaces = []
@@ -142,7 +201,7 @@ world.afterEvents.itemUse.subscribe(async (event) => { //handles starting the ga
             await system.runJob(setBarriers(barriers, dimension))
             const chests = parsedData.chests;
             world.sendMessage('filling chests...')
-            await ResetAndFillChests(chests, dimension) //need to write
+            await resetAndFillChests(chests, dimension) //need to write
             await startLobbyCount(players);
             const spawns = parsedData.spawns;
             MovePlayers(spawns, dimension) //need to write
