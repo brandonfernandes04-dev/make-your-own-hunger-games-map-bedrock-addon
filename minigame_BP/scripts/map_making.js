@@ -109,15 +109,19 @@ world.beforeEvents.playerInteractWithBlock.subscribe((event) => { //handles sett
     const gamemode = event.player.getGameMode()
     const block = event.block
     if(gamemode === "Creative" && event.player.isSneaking === true && block.typeId === "minecraft:chest") {
+        event.cancel = true
         chestLootForm.show(event.player).then(response => {
             if(response.canceled) return;
             switch(response) {
-                case 0: world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`, "low"); break;
-                case 1: world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`, "mid"); break;
-                case 2: world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`, "high"); break;
+                case 0: world.setDynamicProperty(`[${block.location.x}, ${block.location.y}, ${block.location.z}]`, "low"); break;
+                case 1: world.setDynamicProperty(`[${block.location.x}, ${block.location.y}, ${block.location.z}]`, "mid"); break;
+                case 2: world.setDynamicProperty(`[${block.location.x}, ${block.location.y}, ${block.location.z}]`, "high"); break;
                 case 3: 
                 const chestExists = world.getDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`)
-                if (chestExists) {world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`)} 
+                if (chestExists) {
+                    world.setDynamicProperty(`${block.location.x}, ${block.location.y}, ${block.location.z}`)
+                    world.sendMessage('This chests loot tier has been erased')
+                } 
                 else return;
             }
         })

@@ -2,16 +2,14 @@ import {world, system, TickingAreaManager } from "@minecraft/server"
 import { Map } from "./map_making"
 
 function startLobbyCount( players ) { // start game count down 
-    const Players = players
     let count = 31;
     system.runInterval(() => {
         count -- 
-        Players.forEach(player => {
+        players.forEach(player => {
             player.onScreenDisplay.setActionBar(`Game begins: ${count}`)
         });
     }, 20);
     if (count < 1) {
-        count = 31
         world.setDynamicProperty("lobby_count_started", false)
         return
     }
@@ -23,7 +21,7 @@ function pickMap(numOfPlayers) { //Returns an instance of a class from the stati
         const maxPlayers = data.numOfPlayers
         if (maxPlayers >= numOfPlayers) {return true}
     })
-    const randomNum = Math.floor(Math.random() * validMaps.length)
+    const randomNum = Math.floor(Math.random() * validMaps.length + 1)   
     const pickedMap = validMaps[randomNum]
     return pickedMap
 }
@@ -34,7 +32,7 @@ async function* setbarriers(barriers, dimension) {
     }
     const loadedSpaces = []
     let spacesLoaded = 0
-    await TickingAreaManager.createTickingArea('working_area', {x: barriers[0][0], y: barriers[0][1], z: barriers[0][2], dimension: dimension})
+    await TickingAreaManager.createTickingArea('working_area', {x: barriers[0][0], y: barriers[0][1], z: barriers[0][2]}, {dimension: dimension})
     if (barriers.length > 1) {
         for (const barrier of barriers) {
             const [x, y, z] = barrier
@@ -64,16 +62,20 @@ async function* setbarriers(barriers, dimension) {
         return world.sendMessage("All Barriers Set")
     }
 }
-/**
- * 
- * @param {import { Container } from "@minecraft/server";} inventory 
- * @param {*} items 
- */
+
+
+
 function insertItems(inventory, items) {
     let currentSlot = 0
     for (const item of items) {
         if (currentSlot < 26) {
-            inventory.setItem() //This is built in JS function instead of minecraft api method figure out why
+            inventory.setItem(0, item)
+            const numberToIncrease = Math.floor(Math.random() * 3 + 1)
+            currentSlot += numberToIncrease
+        }
+        if (currentSlot > 26) {
+            const firstOpen = inventory.firstEmptySlot()
+            inventory.setItem(firstOpen, item)
         }
     }
 }
@@ -84,7 +86,7 @@ async function* resetAndFillChests(chests, dimension) {
     }
     const loadedChests = []
     let chestsLoaded = 0
-    await TickingAreaManager.createTickingArea('working_area', {x: chests[0][0], y: chests[0][1], z: chests[0][2], dimension: dimension})
+    await TickingAreaManager.createTickingArea('working_area', {x: chests[0][0], y: chests[0][1], z: chests[0][2]}, {dimension: dimension})
         for (const chest of chests) {
             const [x, y, z] = chest
             const isLoaded = dimension.isChunkLoaded({x: x, y: y, z: z})
@@ -102,9 +104,12 @@ async function* resetAndFillChests(chests, dimension) {
             const block = dimension.getBlock({x: x, y: y, z: z})
             if (block.typeId === 'minecraft:chest') {
                 const inventory = block.getComponent('minecraft:inventory').container
+                yield;
                 inventory.clearAll()
                 const typeToFill = world.getDynamicProperty(loadedChest.toString())
+                if (!typeToFill) {world.sendMessage(`Chest with no tier of loot assigned to it found at x: ${x}, y: ${y}, z: ${z} this chest will be skipped`); continue;}
                 const manager = world.getLootTableManager()
+                yield;
                 switch (typeToFill) {
                     case "low":
                         const lowLootTable = manager.getLootTable("hunger_games/chests/low_tier_chest")
@@ -122,7 +127,42 @@ async function* resetAndFillChests(chests, dimension) {
             }
             else {world.sendMessage(`A block that is not a chest was found at x: ${x}, y: ${y}, z: ${z} please be sure you have input the correct cooridinate.`)}
         }
-    } 
+        chests.splice(0, chestsLoaded);
+        TickingAreaManager.removeTickingArea('working_area')
+        yield* system.runJob(resetAndFillChests(chests, dimension))
+    }
+
+    function movePlayers(spawns, players, dimension) {
+        let currentPlayerIndex = 0
+        for (const spawn of spawns) {
+            const [x, y, z] = spawn
+            const currentPlayer = players[currentIndex]
+            currentPlayer.teleport({x: x, y: y, z: z}, {dimension: dimension})
+            currentPlayer.removeTag("Ready")
+            currentPlayer.addTag('inGame')
+            currentIndex++
+        }
+        return world.sendMessage('All players in position')
+    }
+
+    function* dropBarriers (barriers, players, dimension) { // start game count down 
+    let count = 31;
+    system.runInterval(() => {
+        count -- 
+        players.forEach(player => {
+            player.onScreenDisplay.setActionBar(`Barriers Drop: ${count}`)
+        });
+    }, 20);
+    if (count < 1) {
+        world.setDynamicProperty("game_active", true)
+        for (const barrier of barriers) {
+            const [x, y, z] = barrier
+            yield dimension.setBlockType({x: x, y: y, z: z}, 'minecraft:air')
+        }
+        return
+    }
+}
+
 
 // async function* setBarriers(barriers, dimension) {
 //     const loadedSpaces = []
@@ -201,13 +241,22 @@ world.afterEvents.itemUse.subscribe(async (event) => { //handles starting the ga
             await system.runJob(setBarriers(barriers, dimension))
             const chests = parsedData.chests;
             world.sendMessage('filling chests...')
-            await resetAndFillChests(chests, dimension) //need to write
+            await system.runJob(resetAndFillChests(chests, dimension))
             await startLobbyCount(players);
             const spawns = parsedData.spawns;
-            MovePlayers(spawns, dimension) //need to write
+            await movePlayers(spawns, players, dimension)
+            system.runJob(dropBarriers(barriers, players, dimension))
             const numOfTicks = parsedData.numOfTicks; //Create game timer using this data
         }
     }
 })
 
-
+system.afterEvents.scriptEventReceive(event => {
+    if (event.id === "b_minigames:tempFix") {
+        world.setDynamicProperty("game_active", false)
+        const players = world.getPlayers({tags: "inGame"})
+        players.forEach(player => {
+            player.removeTag('inGame')
+        })
+    } 
+})
