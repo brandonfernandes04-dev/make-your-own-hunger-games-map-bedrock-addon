@@ -251,7 +251,7 @@ world.afterEvents.itemUse.subscribe(async (event) => { //handles starting the ga
     }
 })
 
-system.afterEvents.scriptEventReceive(event => {
+system.afterEvents.scriptEventReceive.subscribe((event) => {
     if (event.id === "b_minigames:tempFix") {
         world.setDynamicProperty("game_active", false)
         const players = world.getPlayers({tags: "inGame"})

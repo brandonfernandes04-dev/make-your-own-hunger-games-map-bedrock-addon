@@ -26,53 +26,54 @@ export class Map { //Class that provides methods and Properties for Making a Map
     }
 
 };
-const directoryForm = new ActionFormData() //Form that allows navigation to other forms
-    .title("Welcome to Hunger Games Map Maker")
-    .button("Add a new map")
-    .button("Delete a map")
-    .button("Tutorial")
-    .button("Credits");
-
-const mapMaker = new ModalFormData() //form that allows the player to make their own map by inputing relevant information that the system will use to fill chests place players and place barriers
-    .title("Map Maker")
-    .header("Add the coordinates/name into the field(s) as prompted.\nBe sure to follow the format shown")
-    .textField("Name:", "Enter the map name")
-    .textField("Spawns:", '[x, y, z], [x, y, z], [x, y, z]')
-    .textField("Barriers:", '[x, y, z], [x, y, z], [x, y, z]')
-    .textField("Chests:", '[x, y, z], [x, y, z], [x, y, z]')
-    .dropdown("Dimension:", ["Overworld", "Nether", "End"])
-    .slider('Number of minutes game should run for this map:', 1, 30)
-    .slider('Max number of players:', 2, 20)
-    .submitButton("Submit");
-
-const mapErase = new ModalFormData() //Form that allows for deletion of maps this form will erase maps from the worlds dynamic properties as well as the allMaps array in the Map Class 
-    .title('Map Eraser')
-    .header('Select the map you wish to erase')
-    .dropdown('Maps:', Map.allMaps.map(m => m.name))
-    .submitButton('Delete Map');
 
 
-const tutorialform = new MessageFormData() //Explanation of how to use the system as well as importnant notes for filling out the map maker form
-    .title('How to use this addon')
-    .body('This addon can be used to make your very own maps for the Hunger Games.\nThe first thing to do is build your very own map! Please note the following key points:\n1.The max number of players for any given map is 20\n2. Having many barriers and chests can increase lag. Because of this it is best practice to build your spawn points with regular blocks around the player and one single barrier block instead of multiple per spawn.\n3.As you build your maps take note of the coordinates of chests, Player spawns as well as barrier blocks. Be sure you are getting the actualy coordinate and not the block above it! Make sure to write these down you will need every coordinate later!\n\nFirst open this item again and click on the option for making a map. Then Input the coordinates to all chests, spawns and barriers. (A barrier is an invisible block that will stop the player from leaving spawn until the timer is done)\nMake sure to structure it like such: "x, y, z", "x, y, z", "x, y, z" with a comma between each coordinate and one between each set of coordinates. In addition each set of coordinates should be wrapped in a set of quote marks.');
 
-
-const credits = new MessageFormData() //credits for the Programmer and Map builder!
-    .title('Credits')
-    .body('This addon was made with much care and effort by me (Brandon) It is my intent that people will use this addon to create memories with their friends as well form new friendships!\nThe maps that come included with this addon were made with dedication and talent by My friend Richie. If this addon helps you in any way consider helping others with your craft! Thank you!');
-
-const chestLootForm = new ActionFormData()
-    .title('Set Chest Loot')
-    .button('Set chest to low level loot')
-    .button('Set chest to mid level loot')
-    .button('Set chest to high level loot')
-    .button('Erase this chest from Map');
-
-
-world.afterEvents.itemUse((event) => { //Handels showing the forms starting from directory from when a player uses the map manager item calls methods from Map class to save the information as a string that can later be parsed to grab relevant information
+world.afterEvents.itemUse.subscribe((event) => { //Handels showing the forms starting from directory from when a player uses the map manager item calls methods from Map class to save the information as a string that can later be parsed to grab relevant information
+    const directoryForm = new ActionFormData() //Form that allows navigation to other forms
+        .title("Welcome to Hunger Games Map Maker")
+        .button("Add a new map")
+        .button("Delete a map")
+        .button("Tutorial")
+        .button("Credits");
+    
+    const mapMaker = new ModalFormData() //form that allows the player to make their own map by inputing relevant information that the system will use to fill chests place players and place barriers
+        .title("Map Maker")
+        .header("Add the coordinates/name into the field(s) as prompted.\nBe sure to follow the format shown")
+        .textField("Name", "Enter the map name")
+        .textField("Spawns", '[x, y, z], [x, y, z], [x, y, z]')
+        .textField("Barriers", '[x, y, z], [x, y, z], [x, y, z]')
+        .textField("Chests", '[x, y, z], [x, y, z], [x, y, z]')
+        .dropdown("Dimension", ["Overworld", "Nether", "End"])
+        .slider('Number of minutes game should run for this map', 1, 30)
+        .slider('Max number of players', 2, 20)
+        .submitButton("Submit");
+    
+    const mapErase = new ModalFormData() //Form that allows for deletion of maps this form will erase maps from the worlds dynamic properties as well as the allMaps array in the Map Class 
+        .title('Map Eraser')
+        .header('Select the map you wish to erase')
+        .dropdown('Maps', Map.allMaps.map(m => m.name))
+        .submitButton('Delete Map');
+    
+    
+    const tutorialform = new MessageFormData() //Explanation of how to use the system as well as importnant notes for filling out the map maker form
+        .title('How to use this addon')
+        .body('This addon can be used to make your very own maps for the Hunger Games.\nThe first thing to do is build your very own map! Please note the following key points:\n1.The max number of players for any given map is 20\n2. Having many barriers and chests can increase lag. Because of this it is best practice to build your spawn points with regular blocks around the player and one single barrier block instead of multiple per spawn.\n3.As you build your maps take note of the coordinates of chests, Player spawns as well as barrier blocks. Be sure you are getting the actualy coordinate and not the block above it! Make sure to write these down you will need every coordinate later!\n\nFirst open this item again and click on the option for making a map. Then Input the coordinates to all chests, spawns and barriers. (A barrier is an invisible block that will stop the player from leaving spawn until the timer is done)\nMake sure to structure it like such: [x, y, z], [x, y, z], [x, y, z] with a comma between each coordinate and one between each set of coordinates. In addition each set of coordinates should be wrapped in a set of quote marks.')
+        .button1('Close');
+    
+    const credits = new MessageFormData() //credits for the Programmer and Map builder!
+        .title('Credits')
+        .body('This addon was made with much care and effort by me (Brandon) It is my intent that people will use this addon to create memories with their friends as well form new friendships!\nThe maps that come included with this addon were made with dedication and talent by My friend Richie. If this addon helps you in any way consider helping others with your craft! Thank you!')
+        .button1('Close')
+    const chestLootForm = new ActionFormData()
+        .title('Set Chest Loot')
+        .button('Set chest to low level loot')
+        .button('Set chest to mid level loot')
+        .button('Set chest to high level loot')
+        .button('Erase this chest from Map');
     const player = event.source
-    const item = event.item.typeId;
-    if (item = "b_minigames:map_manager") {
+    const item = event.itemStack.typeId;
+    if (item === "b_minigames:map_manager") {
         directoryForm.show(player).then(response => {
             if (response.canceled) {return};
            const selection = response.selection;
