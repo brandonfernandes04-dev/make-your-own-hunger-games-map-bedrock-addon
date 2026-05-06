@@ -7,8 +7,32 @@
         "b_minigames:start_game_item": {
          "textures": "textures/system_items/start_game_item" 
         },
-        "b_minigames:map_maker": {
-         "textures": "textures/system_items/map_maker"
+        "b_minigames:map_manager": {
+         "textures": "textures/system_items/map_manager"
+        },
+        "b_minigames:clear_all": {
+         "textures": "textures/system_items/clear_all"
+        },
+        "b_minigames:set_name": {
+         "textures": "textures/system_items/set_name"
+        },
+        "b_minigames:set_barrier": {
+         "textures": "textures/system_items/set_barrier"
+        },
+        "b_minigames:set_chest": {
+         "textures": "textures/system_items/set_chest"
+        },
+        "b_minigames:set_door": {
+         "textures": "textures/system_items/set_door"
+        },
+        "b_minigames:set_mins": {
+         "textures": "textures/system_items/set_mins"
+        },
+        "b_minigames:set_spawn": {
+         "textures": "textures/system_items/set_spawn"
+        },
+        "b_minigames:confirm_and_create": {
+         "textures": "textures/system_items/confirm_and_create"
         }
     }
 }
