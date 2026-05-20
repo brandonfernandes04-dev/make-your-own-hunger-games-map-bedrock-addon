@@ -1,0 +1,33 @@
+{
+    "format_version": "1.14.0",
+    "sound_definitions": {
+        "playerJoinQueue": {
+            "category": "neutral",
+            "sounds": ["sounds/player_join_queue"]
+        },
+        "playerLeaveQueue": {
+            "category": "neutral",
+            "sounds": ["sounds/player_leave_queue"]
+        },
+        "playerFail": {
+            "category": "neutral",
+            "sounds": ["sounds/player_fail"]
+        },
+        "playerWin": {
+            "category": "neutral",
+            "sounds": ["sounds/player_win"]
+        },
+        "gameStartCountDown": {
+            "category": "neutral",
+            "sounds": ["sounds/game_start_count_down"]
+        },
+        "lobbyCountStart": {
+            "category": "neutral",
+            "sounds": ["sounds/lobby_count_start"]
+        },
+        "startSpectate": {
+            "category": "neutral",
+            "sounds": ["sounds/start_spectate"]
+        }
+    }
+}

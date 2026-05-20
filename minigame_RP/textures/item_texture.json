@@ -33,6 +33,12 @@
         },
         "b_minigames:confirm_and_create": {
          "textures": "textures/system_items/confirm_and_create"
+        },
+        "b_minigames:set_lobby_item": {
+         "textures": "textures/system_items/set_lobby_item"
+        },
+        "b_minigames:spectate_current_match" : {
+            "textures": "textures/system_items/spectate_current_match"
         }
     }
 }

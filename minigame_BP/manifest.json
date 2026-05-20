@@ -4,7 +4,7 @@
     "name": "Mini Games Behavior",
     "description": "Behavior pack for the minigame realm.",
     "uuid": "8ac0c306-d20e-4e6d-8b63-f59d02272022",
-    "version": [1, 0, 1],
+    "version": [1, 0, 10],
     "min_engine_version": [1, 21, 0]
   },
   "modules": [
@@ -31,6 +31,10 @@
     {
       "module_name": "@minecraft/server-ui",
       "version": "2.0.0"
+    },
+    {
+      "uuid": "771cbcca-e43e-469f-a1ee-b92a00fcb158",
+      "version": [1, 0, 10]
     }
   ]
 }

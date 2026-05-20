@@ -2,121 +2,972 @@
     "pools": [
         {
             "rolls": 1,
+
             "entries": [
                 {
-                    "type": "loot_table",
-                    "name": "loot_tables/hunger_games/weapons/high_tier_weapons/high_tier_swords.json",
-                    "weight": 10
-                },
-                {
-                    "type": "loot_table",
-                    "name": "loot_tables/hunger_games/weapons/high_tier_weapons/high_tier_axes.json",
-                    "weight": 10
-                },
-                {
-                    "type": "loot_table",
-                    "name": "loot_tables/hunger_games/weapons/high_tier_weapons/high_tier_bows.json",
-                    "weight": 10
-                }
-            ]
-        },
-        {
-            "rolls": 1,
-            "entries":[
-                {
                     "type": "empty",
-                    "weight": 1
-                },
-                {
-                    "type": "loot_table",
-                    "name": "loot_tables/hunger_games/armor/high_tier_armor.json",
-                    "weight": 4
-                }
-            ]
-        },
-        {
-            "rolls": 2,
-            "entries":[
-                {
-                    "type": "empty",
-                    "weight": 1
-                },
-                {
-                    "type": "loot_table",
-                    "name": "loot_tables/hunger_games/other/arrows.json",
-                    "weight": 6
-                }
-            ]
-        },
-        {
-            "rolls": 2,
-            "entries":[
-                {
-                    "type": "empty",
-                    "weight": 1
-                },
-                {
-                    "type": "loot_table",
-                    "name": "loot_tables/hunger_games/food/food.json",
-                    "weight": 6
-                }
-            ]
-        },
-        {
-            "rolls": 2,
-            "entries":[
-                {
-                    "type": "empty",
-                    "weight": 2
-                },
-                {
-                    "type": "loot_table",
-                    "name": "loot_tables/hunger_games/potions/potions.json",
-                    "weight": 4
-                }
-            ]
-        },
-        {
-            "rolls": 2,
-            "entries":[
-                {
-                    "type": "empty",
-                    "weight": 2
-                },
-                {
-                    "type": "loot_table",
-                    "name": "loot_tables/hunger_games/other/special.json",
-                    "weight": 4
-                }
-            ]
-        },
-        {
-            "rolls": 1,
-            "entries":[
-                {
-                    "type": "empty",
-                    "weight": 4
+                    "weight": 100
                 },
                 {
                     "type": "item",
-                    "name": "minecraft:shield",
-                    "weight": 4
+                    "name": "minecraft:iron_helmet",
+                    "weight": 60
                 },
                 {
                     "type": "item",
-                    "name": "minecraft:shield",
-                    "weight": 4,
+                    "name": "minecraft:diamond_helmet",
+                    "weight": 30
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_helmet",
+                    "weight": 20
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_helmet",
+                    "weight": 50,
                     "functions": [
                         {
-                            "function": "specific_enchant",
-                            "enchants": [
-                                {
-                                    "id": "unbreaking",
-                                    "level": 3
-                                }
-                            ]
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
                         }
                     ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_helmet",
+                    "weight": 20,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_helmet",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 100
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_chestplate",
+                    "weight": 60
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_chestplate",
+                    "weight": 30
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_chestplate",
+                    "weight": 20
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_chestplate",
+                    "weight": 50,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_chestplate",
+                    "weight": 20,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_chestplate",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 100
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_leggings",
+                    "weight": 60
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_leggings",
+                    "weight": 30
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_leggings",
+                    "weight": 20
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_leggings",
+                    "weight": 50,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_leggings",
+                    "weight": 20,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_leggings",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 100
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_boots",
+                    "weight": 60
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_boots",
+                    "weight": 30
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_boots",
+                    "weight": 20
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_boots",
+                    "weight": 50,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_boots",
+                    "weight": 20,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_boots",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 15,
+                                "max": 30
+                            }  
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 220
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_sword",
+                    "weight": 50
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_sword",
+                    "weight": 40
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_sword",
+                    "weight": 20
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_spear",
+                    "weight": 50
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_spear",
+                    "weight": 40
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_spear",
+                    "weight": 20
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_axe",
+                    "weight": 60
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_axe",
+                    "weight": 50
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_axe",
+                    "weight": 30
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_sword",
+                    "weight": 30,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_sword",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_sword",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_spear",
+                    "weight": 40,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_spear",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_spear",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_axe",
+                    "weight": 40,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:diamond_axe",
+                    "weight": 30,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:netherite_axe",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 5,
+                                "max": 15
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 50
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:bow",
+                    "weight": 100,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 20,
+                                "max": 30
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:crossbow",
+                    "weight": 100,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": {
+                                "min": 20,
+                                "max": 30
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 2,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 150
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "slowness"
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strong_slowness"
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "harming"
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strong_harming"
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "poison"
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strong_poison"
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "weakness"
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "wither"
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:arrow",
+                    "weight": 75,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 6,
+                                "max": 12
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 100
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:cooked_beef",
+                    "weight": 75,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 5,
+                                "max": 10
+                            } 
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:cooked_porkchop",
+                    "weight": 75,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 5,
+                                "max": 10
+                            } 
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:golden_apple",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:enchanted_golden_apple",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 2,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 400
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:milk_bucket",
+                    "weight": 150
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "fire_resistance"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "swiftness"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strong_swiftness"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "healing"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strong_healing"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "regeneration"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strong_regeneration"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strength"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "long_strength"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "slowness"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "slowness"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "long_slowness"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "harming"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strong_harming"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "poison"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "strong_poison"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "poison"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 25,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "weakness"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "long_weakness"
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:splash_potion",
+                    "weight": 10,
+                    "functions": [
+                        {
+                            "function": "set_potion",
+                            "id": "wither"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls" : 1,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 50
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:shield",
+                    "weight": 100
                 }
             ]
         }
