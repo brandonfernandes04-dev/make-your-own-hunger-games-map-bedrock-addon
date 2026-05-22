@@ -3,7 +3,8 @@ import { ModalFormData, ActionFormData, MessageFormData } from "@minecraft/serve
 import {waitTillPlayerValid} from "./start_game_logic"
 
 
-const mapMakerItems = ["b_minigames:clear_all", "b_minigames:set_name", "b_minigames:set_spawn", "b_minigames:set_barrier", "b_minigames:set_chest", "b_minigames:set_door", "b_minigames:set_mins", "b_minigames:confirm_and_create"]
+const mapMakerItems = ["b_minigames:clear_all", "b_minigames:set_name", "b_minigames:set_spawn", "b_minigames:set_barrier", "b_minigames:set_chest", "b_minigames:set_door", "b_minigames:set_mins", "b_minigames:confirm_and_create", "b_minigames:cancel"]
+const mapEditorItems = ["b_minigames:clear_all", "b_minigames:set_name", "b_minigames:set_spawn", "b_minigames:set_barrier", "b_minigames:set_chest", "b_minigames:set_door", "b_minigames:set_mins", "b_minigames:confirm_edits", "b_minigames:cancel"]
 export const allowedChests = ["minecraft:chest","minecraft:barrel", "minecraft:trapped_chest", "minecraft:copper_chest", "minecraft:exposed_copper_chest", "minecraft:oxidized_copper_chest", "minecraft:waxed_copper_chest", "minecraft:waxed_exposed_copper_chest", "minecraft:waxed_oxidized_copper_chest", "minecraft:waxed_weathered_copper_chest", "minecraft:weathered_copper_chest", "minecraft:undyed_shulker_box", "minecraft:black_shulker_box", "minecraft:blue_shulker_box", "minecraft:brown_shulker_box", "minecraft:cyan_shulker_box", "minecraft:gray_shulker_box", "minecraft:green_shulker_box", "minecraft:light_blue_shulker_box", "minecraft:light_gray_shulker_box", "minecraft:lime_shulker_box", "minecraft:magenta_shulker_box", "minecraft:orange_shulker_box", "minecraft:pink_shulker_box", "minecraft:purple_shulker_box", "minecraft:red_shulker_box", "minecraft:white_shulker_box", "minecraft:yellow_shulker_box"]
 export const gameControlItems = ["b_minigames:join_game_item", "b_minigames:start_game_item", "b_minigames:spectate_current_match"]
 export const lobbySettingItem = ["b_minigames:set_lobby_item"]
@@ -19,6 +20,7 @@ export class Map { //Class that provides methods and Properties for Making a Map
        if(!IDs) return;
        IDs.forEach(id => {
         const dynamicProperty = world.getDynamicProperty(id);
+        id = id.split(":")[1].trim()
         const map = new Map(id, dynamicProperty);
         Map.allMaps.push(map);
        })
@@ -78,98 +80,242 @@ export function takeItems(player, items, clearInventory = false) {
     }
 }
 
+async function saveChanges(name, data) {
+    const newMap = new Map(name, data)
+    await newMap.save()
+    Map.allMaps.length = 0
+    Map.loadAllMaps()
+}
+
+
+
+let cachedName = ""
+
+let mapMakerCache = {
+    spawns: [],
+    barriers: [],
+    chests: [],
+    doors: [],
+    numOfTicks: 1200,
+    dimension: null
+}
+
+let arrayToInspect
+let inspectedArrayType
+
+function putMapInCache(map) {
+    const data = JSON.parse(map.mapData)
+    cachedName = map.name
+    mapMakerCache.spawns = data.spawns
+    mapMakerCache.barriers = data.barriers
+    mapMakerCache.chests = data.chests
+    mapMakerCache.doors = data.doors
+    mapMakerCache.numOfTicks = data.numOfTicks
+    mapMakerCache.dimension = data.dimension
+}
 
 
 world.afterEvents.itemUse.subscribe((event) => {
     const item = event.itemStack.typeId;
     if (item === "b_minigames:map_manager") {
+
         const directoryForm = new ActionFormData() //Form that allows navigation to other forms
         .title("Welcome to Hunger Games Map Maker")
         .button("Add a lobby")
         .button("Add a new map")
+        .button('Edit a Map')
         .button("Delete a map")
         .button("Tutorial")
         .button("Credits");
-        
-        const lobbyMaker = new MessageFormData() //Form that gives all lobby making items
-        .title('Welcome to Lobby Maker')
-        .body('To get Started Select Yes. Warning this will clear spaces in your hotbar!')
-        .button1('Yes Continue')
-        .button2('Close Form');
-        
-        const mapMaker = new MessageFormData() //Form That gives all map maker items to the player if they select yes
-        .title('Welcome to Map Maker')
-        .body('To get Started Select Yes. Warning This will clear your hotbar!')
-        .button1('Yes Continue')
-        .button2('Close Form');
 
-        const mapErase = new ModalFormData() //Form that allows for deletion of maps this form will erase maps from the worlds dynamic properties as well as the allMaps array in the Map Class 
-        .title('Map Eraser')
-        .header('Select the map you wish to erase')
-        .dropdown('Maps', Map.getAllMapIds())
-        .submitButton('Delete Map');
-        
-        const tutorialform = new MessageFormData() //Explanation of how to use the system as well as importnant notes for filling out the map maker form
-        .title('How to use this addon')
-        .body('') //Need to rewrite the tutorial now that methods for making a map have changed.
-        .button1('Close');
-        
-        const credits = new MessageFormData() //credits for the Programmer and Map builder!
-        .title('Credits')
-        .body('This addon was made with much care and effort by me (Brandon) It is my intent that people will use this addon to create memories with their friends as well form new friendships!\nThe maps that come included with this addon were made with dedication and talent by My friend Richie. If this addon helps you in any way consider helping others with your craft! Thank you!')
-        .button1('Close');
         const player = event.source
-            directoryForm.show(player).then(response => {
-                if (response.canceled) {return};
-                const selection = response.selection;
-                switch(selection) {
-                    case 0: lobbyMaker.show(player).then(response => {
-                        if (response.canceled) {return}
-                        else if (response.selection === 0) {
-                            giveItems(player, lobbySettingItem)
-                            player.addTag('settingLobby')
+        directoryForm.show(player).then(response => {
+            if (response.canceled) {return};
+            const selection = response.selection;
+            switch(selection) {
+                case 0: 
+                const lobbyMaker = new MessageFormData() //Form that gives all lobby making items
+                .title('Welcome to lobby maker')
+                .body('To get Started Select Yes. Warning this will clear spaces in your hotbar!')
+                .button1('Yes Continue')
+                .button2('Close Form');
+
+                lobbyMaker.show(player).then(response => {
+                    if (response.canceled) {return}
+                    else if (response.selection === 0) {
+                        giveItems(player, lobbySettingItem)
+                        player.addTag('settingLobby')
+                    }
+                }); break;
+                case 1:
+                    const mapMaker = new MessageFormData() //Form That gives all map maker items to the player if they select yes
+                    .title('Welcome to map maker')
+                    .body('To get Started Select Yes. Warning This will clear your hotbar!')
+                    .button1('Yes Continue')
+                    .button2('Close Form');
+
+                    mapMaker.show(player).then(response => {
+                    if (world.getPlayers({tags: ['makingMap']}).length > 0 || world.getPlayers({tags: ['editingMap']}).length > 0) {return world.sendMessage('Someone is editing or making a map at this point in time. Please wait until they are finished. If you are sure this is not the case try completley restarting the world.')}
+                    else if (response.canceled) return
+                    else if (response.selection === 0) {
+                        giveItems(player, mapMakerItems)
+                        player.addTag('makingMap')
+                    }
+                    else if (response.selection === 1) {return};
+                }); break;
+                case 2:
+                    const mapEditorDir = new ModalFormData() //form that allows for navigation between precise or general edit mode. Allows for picking a map and item within the map to affect. 
+                    .title('Welcome to map editor')
+                    .header('Select the map to make changes to')
+                    .dropdown('Map', Map.getAllMapIds(), {defaultValueIndex: 0, tooltip: 'The map you wish to change'})
+                    .dropdown('General mode or Precise mode', ['General mode', 'Precise Mode'], {tooltip: "General edit mode will give you the items needed to make a map and move your selected map to the cache to add more coordinates too. Precise mode will allow for instertion deletion or replacment of coordinates saved to the map.", defaultValueIndex: 0})
+                    .dropdown('Map item to change', ['Spawns', 'Barriers', 'Chests', 'Doors'], {tooltip: "If the item to change you have selected is empty an error will occur. If this happens use general editor mode to add your coordinates in. If you are entering general edit mode this field is non applicable.", defaultValueIndex: 0})
+                    .submitButton('Submit'); 
+
+                    mapEditorDir.show(player).then(response => {
+                    if (world.getPlayers({tags: ['makingMap']}).length > 0 || world.getPlayers({tags: ['editingMap']}).length > 0) {return world.sendMessage('Someone is editing or making a map at this point in time. Please wait until they are finished. If you are sure this is not the case try completley restarting the world.')}
+                    else if (response.canceled) {return}
+                    else if (Map.getAllMapIds()[0] === "No maps created") {return world.sendMessage('There are no maps to edit to get started visit the add a map section of this book.')};
+                    player.addTag('editingMap')
+                    const chosenIndex = response.formValues[1]
+                    const chosenMap = Map.allMaps[chosenIndex]
+                    const mapId = chosenMap.name
+                    putMapInCache(chosenMap)
+                    const modeToEnter = response.formValues[2]
+                    const itemToChange = response.formValues[3]
+                    switch(itemToChange) {
+                        case 0: arrayToInspect = mapMakerCache.spawns.map(spawn => JSON.stringify(spawn)); inspectedArrayType = 'spawns'; break;
+                        case 1: arrayToInspect = mapMakerCache.barriers.map(barrier => JSON.stringify(barrier)); inspectedArrayType = 'barriers'; break;
+                        case 2: arrayToInspect = mapMakerCache.chests.map(chest => JSON.stringify(chest)); inspectedArrayType = 'chests'; break;
+                        case 3: arrayToInspect = mapMakerCache.doors.map(door => JSON.stringify(door)); inspectedArrayType = 'doors'; break;
+                    }
+                    if (modeToEnter === 0) {
+                        giveItems(player, mapEditorItems)
+                    }
+                    else if (modeToEnter === 1) {
+                                const mapEditorChange = new ModalFormData() //form that allows for precise insertion, deletion, and replacment of coordinates for the the list of doors, chests, spawns, and barriers for the map selected in the previous form.
+                                .title('Please Select a coordinate')
+                                .dropdown('Coordinate to remove, change, or insert', arrayToInspect)
+                                .toggle('Replace/delete above coordinate or insert coodinate before above coordiante', {defaultValue: false, tooltip: 'If this is set to on the above coordinate will be replaced by the values you enter. If all those values are blank the coordinate will be deleted instead. If this is set to off the coordinates you enter below will be inserted before the above coordinate in the maps list.'})
+                                .textField('X', '102', {tooltip: 'For the purposes of this form all three values being zero is the same as leaving all blank. If you need to add a point at 0, 0, 0 use general edit mode.'})
+                                .textField('Y', '64', {tooltip: 'For the purposes of this form all three values being zero is the same as leaving all blank. If you need to add a point at 0, 0, 0 use general edit mode.'})
+                                .textField('Z', '92', {tooltip: 'For the purposes of this form all three values being zero is the same as leaving all blank. If you need to add a point at 0, 0, 0 use general edit mode.'})
+                                .submitButton('Submit');
+
+                                mapEditorChange.show(player).then(response => {
+                                if (response.canceled) {player.removeTag('editingMap'); return};
+                                const index = response.formValues[0]
+                                console.warn(index)
+                                const ReplaceDeleteOrInsert = response.formValues[1]
+                                const rawData = {
+                                    x: response.formValues[2],
+                                    y: response.formValues[3],
+                                    z: response.formValues[4]
+                                }
+                                const cleanlocation = {
+                                    x: Number(rawData.x),
+                                    y: Number(rawData.y),
+                                    z: Number(rawData.z)
+                                }
+                                if (ReplaceDeleteOrInsert === true) {
+                                    if (Object.values(cleanlocation).every(value => !Number.isNaN(value) && value !== 0)) {
+                                        switch(inspectedArrayType) {
+                                            case 'spawns': 
+                                                mapMakerCache.spawns.splice(index, 1, cleanlocation)
+                                            break;
+                                            case 'barriers':
+                                                mapMakerCache.barriers.splice(index, 1, cleanlocation)
+                                            break;
+                                            case 'chests':
+                                                mapMakerCache.chests.splice(index, 1, cleanlocation)
+                                            break;
+                                            case 'doors':
+                                                mapMakerCache.doors.splice(index, 1, cleanlocation)
+                                            break;
+                                        }
+                                    }
+                                    else if (Object.values(rawData).every(input => input === 0 || input.trim() === "")) {
+                                        switch(inspectedArrayType) {
+                                            case 'spawns': 
+                                                mapMakerCache.spawns.splice(index, 1)
+                                            break;
+                                            case 'barriers':
+                                                mapMakerCache.barriers.splice(index, 1)
+                                            break;
+                                            case 'chests':
+                                                mapMakerCache.chests.splice(index, 1)
+                                            break;
+                                            case 'doors':
+                                                mapMakerCache.doors.splice(index, 1)
+                                            break;
+                                        }
+                                    }
+                                    else {world.sendMessage('There was a problem with your inputs if you are trying to remove a coordinate leave all of the values blank.'); player.removeTag('editingMap'); return}
+                                }
+                                else if (ReplaceDeleteOrInsert === false) {
+                                    if (Object.values(cleanlocation).every(value => !Number.isNaN(value) && value !== 0)) {
+                                        switch(inspectedArrayType) {
+                                            case 'spawns': 
+                                                mapMakerCache.spawns.splice(index, 0, cleanlocation)
+                                            break;
+                                            case 'barriers':
+                                                mapMakerCache.barriers.splice(index, 0, cleanlocation)
+                                            break;
+                                            case 'chests':
+                                                mapMakerCache.chests.splice(index, 0, cleanlocation)
+                                            break;
+                                            case 'doors':
+                                                mapMakerCache.doors.splice(index, 0, cleanlocation)
+                                            break;
+                                        }
+                                    }
+                                    else {world.sendMessage('The coordinates you entered are not valid numbers so your input could not be added to the list'); player.removeTag('editingMap'); return}
+                                }
+                                saveChanges(mapId, JSON.stringify(mapMakerCache))
+                                player.removeTag('editingMap')
+                            })
                         }
-                    }); break;
-                    case 1: mapMaker.show(player).then(response => {
-                        if (response.canceled) return
-                        else if (response.selection === 0) {
-                            giveItems(player, mapMakerItems)
-                            player.addTag('makingMap')
-                        }
-                        else if (response.selection === 1) {return};
-                    }); break;
-                    case 2: mapErase.show(player).then(response => {
+                    }); break
+                    case 3:
+                        const mapErase = new ModalFormData() //Form that allows for deletion of maps this form will erase maps from the worlds dynamic properties as well as the allMaps array in the Map Class 
+                        .title('Map eraser')
+                        .header('Select the map you wish to erase')
+                        .dropdown('Maps', Map.getAllMapIds())
+                        .submitButton('Delete Map'); 
+
+                        mapErase.show(player).then(response => {
                         if (response.canceled) return;
                         const chosenMap = response.formValues[1]
                         const MapId = Map.allMaps[chosenMap].name
-                        world.setDynamicProperty(MapId)
+                        world.setDynamicProperty(`Hunger Games: ${MapId}`)
                         Map.allMaps.splice(chosenMap, 1)
                     }); break;
-                    case 3: tutorialform.show(player); break;
-                    case 4: credits.show(player); break;
+                    case 4:
+                    const tutorialform = new MessageFormData() //Explanation of how to use the system as well as importnant notes for filling out the map maker form
+                    .title('How to use this addon')
+                    .body('') //Need to rewrite the tutorial now that methods for making a map have changed.
+                    .button1('Close'); 
+
+                    tutorialform.show(player); break;
+                    case 5:
+                    const credits = new MessageFormData() //credits for the Programmer and Map builder!
+                    .title('Credits')
+                    .body('This addon was made with much care and effort by me (Brandon) It is my intent that people will use this addon to create memories with their friends as well form new friendships!\nThe maps that come included with this addon were made with dedication and talent by my friend Richie. If this addon helps you in any way consider helping others with your craft! Thank you!')
+                    .button1('Close'); 
+
+                    credits.show(player); break;
                 }
             })
         }
     })
 
-    let cachedName = ""
-
-    let mapMakerCache = {
-        spawns: [],
-        barriers: [],
-        chests: [],
-        spawns: [],
-        doors: [],
-        numOfTicks: 1200,
-        dimension: "minecraft:overworld"
-    }
 
 
-    world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
+    world.beforeEvents.playerInteractWithBlock.subscribe((event) => { //handles players editing a map with general mode or making a map.
         if (event.itemStack === undefined) return;
         if (event.isFirstEvent === false) return;
         const player = event.player;
-        if (player.hasTag('makingMap')) {
+        if (player.hasTag('makingMap') || player.hasTag('editingMap')) {
             const item = event.itemStack.typeId
             if (!item) return;
             const block = event.block
@@ -177,13 +323,13 @@ world.afterEvents.itemUse.subscribe((event) => {
             switch (item) {
                 case "b_minigames:clear_all": 
                 cachedName = ""
-                mapMakerCache.spawns.length = 0
-                mapMakerCache.barriers.length = 0
-                mapMakerCache.chests.length = 0
-                mapMakerCache.spawns.length = 0
-                mapMakerCache.doors.length = 0
+                mapMakerCache.spawns = []
+                mapMakerCache.barriers = []
+                mapMakerCache.chests.length = []
+                mapMakerCache.doors.length  = []
                 mapMakerCache.numOfTicks = 1200
-                mapMakerCache.dimension = "minecraft:overworld"
+                mapMakerCache.dimension = null
+                world.sendMessage('Cache cleared')
                 break;
                 case "b_minigames:set_name":
                     event.cancel = true
@@ -268,26 +414,71 @@ world.afterEvents.itemUse.subscribe((event) => {
                             return world.sendMessage('You must input a name for your map first!')
                         }
                         if (mapMakerCache.barriers.length === 0) {
-                            world.sendMessage('You have no barriers made for this Map you may want to delete it!')
+                            world.sendMessage('You have no barriers made for this Map if this is intentional you may ignore this message!')
                         }
                         if (mapMakerCache.chests.length === 0) {
-                            world.sendMessage('You have no chests made for this Map you may want to delete it!')
+                            world.sendMessage('You have no chests made for this Map if this is intentional you may ignore this message!')
                         }
                         if (mapMakerCache.doors.length === 0) {
                             world.sendMessage('You have given no doors to reset if this is intentional you may ignore this message!')
                         }
                         if (mapMakerCache.numOfTicks === 1200) {
-                            world.sendMessage('You have not set a time for this Map the default of 10 minutes has been chosen if that is intentional you may ignore this message!')
+                            world.sendMessage('You have not set a time for this Map or have left it as the default. The default of 10 minutes has been chosen if that is intentional you may ignore this message!')
                         }
                         const dataString = JSON.stringify(mapMakerCache)
-                        const createdMap = new Map(`${cachedName}`, dataString)
+                        const createdMap = new Map(cachedName, dataString)
                         createdMap.save()
                         Map.allMaps.push(createdMap)
                         system.run(() => {
-                            player.removeTag('makingMap')
+                            if (player.hasTag('makingMap')) {
+                                player.removeTag('makingMap')
+                            }
+                            if (player.hasTag('editingMap')) {
+                                player.removeTag('editingMap')
+                            }
                             takeItems(player, mapMakerItems)
                         })
                     break;
+                    case "b_minigames:confirm_edits":
+                        event.cancel = true
+                        mapMakerCache.dimension = player.dimension.id
+                        if (cachedName.length === 0) {
+                            return world.sendMessage('You must input a name for your map first!')
+                        }
+                        if (mapMakerCache.barriers.length === 0) {
+                            world.sendMessage('You have no barriers made for this Map if this is intentional you may ignore this message!')
+                        }
+                        if (mapMakerCache.chests.length === 0) {
+                            world.sendMessage('You have no chests made for this Map if this is intentional you may ignore this message!')
+                        }
+                        if (mapMakerCache.doors.length === 0) {
+                            world.sendMessage('You have given no doors to reset if this is intentional you may ignore this message!')
+                        }
+                        if (mapMakerCache.numOfTicks === 1200) {
+                            world.sendMessage('You have not set a time for this Map or have left it as the default. The default of 10 minutes has been chosen if that is intentional you may ignore this message!')
+                        }
+                        system.runTimeout(() => {
+                            world.sendMessage('If the changes you have just made included a name change you will need to delete the map with the previous name manually via the delete a map feature in the map manager book. It is also highly recommened to do a full reload of the world after making any and all changes to a map!')
+                        }, 160)
+                        system.run(() => {
+                            saveChanges(cachedName, JSON.stringify(mapMakerCache))
+                            takeItems(player, mapEditorItems)
+                            if (player.hasTag('editingMap')) {
+                                player.removeTag('editingMap')
+                            }
+                        }); break
+                    case "b_minigames:cancel":
+                        event.cancel = true
+                        system.run(() => {
+                            if (player.hasTag('editingMap')) {
+                                takeItems(player, mapEditorItems)
+                                player.removeTag('editingMap')
+                            }
+                            else if (player.hasTag('makingMap')) {
+                                takeItems(player, mapMakerItems)
+                                player.removeTag('makingMap')
+                            }
+                        }); break
                     return;
             }
 
@@ -308,7 +499,7 @@ world.beforeEvents.playerInteractWithBlock.subscribe((event) => { //handles sett
             .button('Set chest to low level loot')
             .button('Set chest to mid level loot')
             .button('Set chest to high level loot')
-            .button('Erase this chest from Map');
+            .button('Erase the fill data of this chest');
             event.cancel = true
             system.run(() => {
                 chestLootForm.show(event.player).then(response => {

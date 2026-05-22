@@ -11,17 +11,17 @@ system.run(() => {
 })
 
 system.runInterval(() => {
-    const players = world.getPlayers({excludeTags: ['inGame']})
+    const players = world.getPlayers({excludeTags: ['inGame', 'Spectating']})
     for (const player of players) {
-        player.getComponent('minecraft:health').resetToMaxValue
-        player.getComponent('minecraft:player.hunger').resetToMaxValue
-        player.getComponent('minecraft:player.saturation').resetToMaxValue
+        player.getComponent('minecraft:health').resetToMaxValue()
+        player.getComponent('minecraft:player.hunger').resetToMaxValue()
+        player.getComponent('minecraft:player.saturation').resetToMaxValue()
         const effects = player.getEffects()
         for (const effect of effects) {
             player.removeEffect(effect.typeId)
         }
     }
-}, 100)
+}, 80)
 
 
 async function waitTillPlayerLoadsIn(playerName) {
@@ -55,6 +55,12 @@ world.afterEvents.playerJoin.subscribe(async (event) => {
             player.teleport(lobby.location, {dimension: dimension})
             giveItems(player, gameControlItems, true)
             console.warn(`${playerName}'s spawn point has been set to the lobby`)
+            if (player.hasTag('makingMap')) {
+                player.removeTag('makingMap')
+            }
+            if (player.hasTag('editingMap')) {
+                player.removeTag('editingMap')
+            }
             const leaveCondition = world.getDynamicProperty(playerName)
             if (!leaveCondition) {return};
             if (leaveCondition === "leftDuringGame") {

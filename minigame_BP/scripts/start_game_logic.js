@@ -49,6 +49,9 @@ async function resetPlayersToLobby(players) {
         if (player.hasTag('alive')) {
             player.removeTag('alive')
         }
+        if (player.hasTag('Spectating')) {
+            player.removeTag('Spectating')
+        }
         player.teleport(lobby.location, {dimension: world.getDimension(lobby.dimension)})
     }
 }

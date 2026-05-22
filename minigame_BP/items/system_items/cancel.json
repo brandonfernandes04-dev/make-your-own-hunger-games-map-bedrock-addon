@@ -1,0 +1,19 @@
+{
+    "format_version": "1.21.120",
+    "minecraft:item": {
+        "description": {
+            "identifier": "b_minigames:cancel",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:interact_button": true,
+            "minecraft:max_stack_size": 1,
+            "minecraft:icon": "b_minigames:cancel",
+            "minecraft:display_name": {
+                "value": "Cancel"
+            }
+        }
+    }
+}
