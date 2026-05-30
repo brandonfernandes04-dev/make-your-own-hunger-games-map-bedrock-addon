@@ -970,6 +970,30 @@
                     "weight": 100
                 }
             ]
+        },
+        {
+            "rolls" : 1,
+
+            "entries": [
+                {
+                    "type": "empty",
+                    "weight": 100
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:ender_pearl",
+                    "weight": 30,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 2,
+                                "max": 3
+                            } 
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

@@ -1,27 +1,39 @@
 import { system, world } from "@minecraft/server"
-import { gameControlItems, giveItems, Map } from "./map_making"
+import { giveItems } from "./map_making"
+import { hungerGamesMap } from "./start_game_logic"
+import { gameControlItems } from './start_game_logic'
+import {waitTillPlayerValid} from "./start_game_functions"
 import {garbageCollector} from "./lose_item_garbage_collector"
+import { Lobby } from "./lobby_making"
 import "./start_game_logic"
+import "./start_game_functions"
+import "./game_vote"
 import "./map_making"
 import "./lobby_making"
 import "./lose_item_garbage_collector"
+import "./barrier_tool"
 
 system.run(() => {
-    Map.loadAllMaps()
+    hungerGamesMap.loadAllMaps()
+    Lobby.loadAllLobbies()
 })
 
-system.runInterval(() => {
-    const players = world.getPlayers({excludeTags: ['inGame', 'Spectating']})
+system.runInterval(async () => {
+    const players = world.getPlayers({excludeTags: ['inGame', 'Spectating', 'alive']})
+    if (players.length === 0) {return}
     for (const player of players) {
-        player.getComponent('minecraft:health').resetToMaxValue()
+        await waitTillPlayerValid(player)
+        player.addEffect('minecraft:instant_health', 2, {showParticles: false})
+        // player.getComponent('minecraft:health').resetToMaxValue() //this traps player in weird death state if it occurs when they are at deathscreen remove after
         player.getComponent('minecraft:player.hunger').resetToMaxValue()
         player.getComponent('minecraft:player.saturation').resetToMaxValue()
         const effects = player.getEffects()
         for (const effect of effects) {
+            if (effect.typeId !== 'minecraft:instant_health')
             player.removeEffect(effect.typeId)
         }
     }
-}, 80)
+}, 100)
 
 
 async function waitTillPlayerLoadsIn(playerName) {
@@ -44,15 +56,27 @@ async function waitTillPlayerLoadsIn(playerName) {
 
 world.afterEvents.playerJoin.subscribe(async (event) => {
     const playerName = event.playerName
-    const lobbyProp = world.getDynamicProperty('lobby')
-    if (!lobbyProp) {return world.sendMessage('You have not created a lobby for players to start at. To create one use the Map Manager Item.')}
-        const lobby = JSON.parse(lobbyProp)
+    const player = await waitTillPlayerLoadsIn(playerName)
+    let lobby
+    const lobbyChoice = world.getDynamicProperty('lobbyChoice')
+    if (!lobbyChoice) {return world.sendMessage('You have not chosen a lobby for players to start at. To do so use the lobby manager item')};
+    if (lobbyChoice === 'random' || lobbyChoice === 'perferCurrrentDim') {
+        lobby = JSON.parse(Lobby.getRandomLobby().data)
+    }
+    else {
+        const getLobby = Lobby.getLobbyByID(lobbyChoice)
+        if (getLobby) {
+            lobby = JSON.parse(Lobby.getLobbyByID(lobbyChoice).data)
+        }
+    }
+    if (!lobby) {
+        return world.sendMessage('You have not created and or registered a lobby for players to start at. To create one use the lobby manager item.')
+    }
         const location = lobby.location
         const dimension = world.getDimension(lobby.dimension)
         try {
-            const player = await waitTillPlayerLoadsIn(playerName)
             player.setSpawnPoint({x: location.x, y: location.y, z: location.z, dimension: dimension})
-            player.teleport(lobby.location, {dimension: dimension})
+            player.teleport(location, {dimension: dimension})
             giveItems(player, gameControlItems, true)
             console.warn(`${playerName}'s spawn point has been set to the lobby`)
             if (player.hasTag('makingMap')) {
@@ -61,14 +85,23 @@ world.afterEvents.playerJoin.subscribe(async (event) => {
             if (player.hasTag('editingMap')) {
                 player.removeTag('editingMap')
             }
+            if (player.hasTag('Spectating')) {
+                player.removeTag('Spectating')
+            }
+            if (player.hasTag('Ready')) {
+                player.removeTag('Ready')
+            }
+            if (player.hasTag('alive')) {
+                player.removeTag('alive')
+            }
+            if (player.hasTag('inGame')) {
+                player.removeTag('inGame')
+            }
             const leaveCondition = world.getDynamicProperty(playerName)
             if (!leaveCondition) {return};
             if (leaveCondition === "leftDuringGame") {
-                player.sendMessage('You have left during a game. Shame on you do you know how long it took me to program in saftey guards just for people like you?')
+                player.sendMessage('You have left during a game. Shame on you. Do you know how long it took me to program in saftey guards just for people like you?')
                 world.setDynamicProperty(playerName)
-                if (player.hasTag('alive')) {
-                    player.removeTag('alive')
-                }
             }
         } catch (error) {
             console.warn(error)
@@ -82,15 +115,16 @@ world.beforeEvents.playerLeave.subscribe((event) => {
     }
 })
 
-world.afterEvents.worldLoad.subscribe(() => {
-    world.setDynamicProperty("game_active", false);
-    const remainingLocations = world.getDynamicProperty('garbageCollectorToDo')
-    if (!remainingLocations) {return}
-    const locations = JSON.parse(remainingLocations)
-    for (const location of locations) {
-        garbageCollector.locations.push(location)
+world.afterEvents.worldLoad.subscribe(async () => {
+    const gameActive = world.getDynamicProperty("game_active")
+    if (gameActive) {
+        const activeMap = Map.getMapByID(gameActive)
+        const data = JSON.parse(activeMap.mapData)
+        const dimension = world.getDimension(data.dimension)
+        world.setDynamicProperty("game_active");
+        await garbageCollector.removeItems(dimension)
+        world.tickingAreaManager.removeAllTickingAreas()
     }
-    garbageCollector.removeItems()
 })
 
 world.beforeEvents.itemUse.subscribe((event) => { //handles players queing into the game by using the join game item
@@ -132,6 +166,30 @@ world.beforeEvents.itemUse.subscribe((event) => { //handles players queing into 
         })
     }
 })
+
+world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
+    const player = event.player
+    const gamemode = player.getGameMode()
+    if (gamemode === 'Creative') {return};
+    const target = event.target
+    if (target.typeId === 'minecraft:armor_stand') {
+        event.cancel = true
+        world.sendMessage(`${player.name}, the dirty cheater has attempted to steal armor off an armor stand everyone shame them!`)
+    }
+})
+
+world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
+    const player = event.player
+    const gamemode = player.getGameMode()
+    if (gamemode === 'Creative') {return};
+    const blockId = event.block.typeId
+    if (blockId === 'minecraft:bed') {
+        event.cancel = true
+    } 
+})
+
+
+
 
 
 

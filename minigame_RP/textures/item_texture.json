@@ -2,13 +2,25 @@
     "resource_pack_name": "Minigame Creator Tools",
     "texture_data": {
         "b_minigames:join_game_item": {
-         "textures": "textures/system_items/join_game_item" 
+         "textures": "textures/game_play_items/join_game_item" 
+        },
+        "b_minigames:game_vote_item": {
+         "textures": "textures/game_play_items/game_vote_item" 
         },
         "b_minigames:start_game_item": {
-         "textures": "textures/system_items/start_game_item" 
+         "textures": "textures/game_play_items/start_game_item" 
+        },
+        "b_minigames:spectate_current_match" : {
+            "textures": "textures/game_play_items/spectate_current_match"
         },
         "b_minigames:map_manager": {
          "textures": "textures/system_items/map_manager"
+        },
+        "b_minigames:lobby_manager": {
+         "textures": "textures/system_items/lobby_manager"
+        },
+        "b_minigames:barrier_tool": {
+         "textures": "textures/system_items/barrier_tool"
         },
         "b_minigames:clear_all": {
          "textures": "textures/system_items/clear_all"
@@ -31,6 +43,9 @@
         "b_minigames:set_spawn": {
          "textures": "textures/system_items/set_spawn"
         },
+        "b_minigames:point_setter": {
+         "textures": "textures/system_items/point_setter"
+        },
         "b_minigames:confirm_and_create": {
          "textures": "textures/system_items/confirm_and_create"
         },
@@ -39,9 +54,6 @@
         },
         "b_minigames:set_lobby_item": {
          "textures": "textures/system_items/set_lobby_item"
-        },
-        "b_minigames:spectate_current_match" : {
-            "textures": "textures/system_items/spectate_current_match"
         }
     }
 }

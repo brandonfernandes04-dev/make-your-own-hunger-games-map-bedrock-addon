@@ -1,49 +1,14 @@
 import {world, system, Player, ItemStack, Dimension } from "@minecraft/server";
 import { ModalFormData, ActionFormData, MessageFormData } from "@minecraft/server-ui";
-import {waitTillPlayerValid} from "./start_game_logic"
+import {waitTillPlayerValid} from "./start_game_functions"
+import { hungerGamesMap } from "./start_game_logic";
 
 
-const mapMakerItems = ["b_minigames:clear_all", "b_minigames:set_name", "b_minigames:set_spawn", "b_minigames:set_barrier", "b_minigames:set_chest", "b_minigames:set_door", "b_minigames:set_mins", "b_minigames:confirm_and_create", "b_minigames:cancel"]
-const mapEditorItems = ["b_minigames:clear_all", "b_minigames:set_name", "b_minigames:set_spawn", "b_minigames:set_barrier", "b_minigames:set_chest", "b_minigames:set_door", "b_minigames:set_mins", "b_minigames:confirm_edits", "b_minigames:cancel"]
+const mapMakerItems = ["b_minigames:clear_all", "b_minigames:set_name", "b_minigames:set_spawn", "b_minigames:set_barrier", "b_minigames:set_chest", "b_minigames:set_door", "b_minigames:set_mins", "b_minigames:point_setter", "b_minigames:confirm_and_create", "b_minigames:cancel"]
+const mapEditorItems = ["b_minigames:clear_all", "b_minigames:set_name", "b_minigames:set_spawn", "b_minigames:set_barrier", "b_minigames:set_chest", "b_minigames:set_door", "b_minigames:set_mins", "b_minigames:point_setter", "b_minigames:confirm_edits", "b_minigames:cancel"]
 export const allowedChests = ["minecraft:chest","minecraft:barrel", "minecraft:trapped_chest", "minecraft:copper_chest", "minecraft:exposed_copper_chest", "minecraft:oxidized_copper_chest", "minecraft:waxed_copper_chest", "minecraft:waxed_exposed_copper_chest", "minecraft:waxed_oxidized_copper_chest", "minecraft:waxed_weathered_copper_chest", "minecraft:weathered_copper_chest", "minecraft:undyed_shulker_box", "minecraft:black_shulker_box", "minecraft:blue_shulker_box", "minecraft:brown_shulker_box", "minecraft:cyan_shulker_box", "minecraft:gray_shulker_box", "minecraft:green_shulker_box", "minecraft:light_blue_shulker_box", "minecraft:light_gray_shulker_box", "minecraft:lime_shulker_box", "minecraft:magenta_shulker_box", "minecraft:orange_shulker_box", "minecraft:pink_shulker_box", "minecraft:purple_shulker_box", "minecraft:red_shulker_box", "minecraft:white_shulker_box", "minecraft:yellow_shulker_box"]
-export const gameControlItems = ["b_minigames:join_game_item", "b_minigames:start_game_item", "b_minigames:spectate_current_match"]
-export const lobbySettingItem = ["b_minigames:set_lobby_item"]
 
-export class Map { //Class that provides methods and Properties for Making a Map as well as saving it to the world via a dynamic property. 
-    constructor(name, mapData) {
-        this.name = name;
-        this.mapData = mapData;
-    }
-    static allMaps = []; //array that holds instnaces of this class. Maps are pushed to this array with the static method loadAllMaps() Which pulls from the worlds dynamic properties.
-    static loadAllMaps() {
-       const IDs = world.getDynamicPropertyIds().filter(id => id.startsWith("Hunger Games:"));
-       if(!IDs) return;
-       IDs.forEach(id => {
-        const dynamicProperty = world.getDynamicProperty(id);
-        id = id.split(":")[1].trim()
-        const map = new Map(id, dynamicProperty);
-        Map.allMaps.push(map);
-       })
-    };
-    static getAllMapIds() {
-        if(Map.allMaps.length < 1) {
-            return ["No maps created"]
-        }
-        else if (Map.allMaps.length >= 1) {
-            const IDs = Map.allMaps.map(map => map.name)
-            return IDs
-        } 
-    };
-    load() {
-       const rawData = JSON.parse(this.mapData);
-       return rawData;
-    };
-    save() {
-        world.setDynamicProperty(`Hunger Games: ${this.name}`, `${this.mapData}`);
-        return world.sendMessage(`Created Map: ${this.name}, with this data attached: ${this.mapData}`);
-    }
 
-};
 
 export async function giveItems(player, items, clearInventory = false) {
     if (player === undefined) {return}
@@ -81,10 +46,10 @@ export function takeItems(player, items, clearInventory = false) {
 }
 
 async function saveChanges(name, data) {
-    const newMap = new Map(name, data)
+    const newMap = new hungerGamesMap(name, data)
     await newMap.save()
-    Map.allMaps.length = 0
-    Map.loadAllMaps()
+    hungerGamesMap.allMaps.length = 0
+    hungerGamesMap.loadAllMaps()
 }
 
 
@@ -97,7 +62,9 @@ let mapMakerCache = {
     chests: [],
     doors: [],
     numOfTicks: 1200,
-    dimension: null
+    dimension: null,
+    startPoint: null,
+    endPoint: null
 }
 
 let arrayToInspect
@@ -112,6 +79,8 @@ function putMapInCache(map) {
     mapMakerCache.doors = data.doors
     mapMakerCache.numOfTicks = data.numOfTicks
     mapMakerCache.dimension = data.dimension
+    mapMakerCache.startPoint = data.startPoint
+    mapMakerCache.endPoint = data.endPoint
 }
 
 
@@ -121,7 +90,6 @@ world.afterEvents.itemUse.subscribe((event) => {
 
         const directoryForm = new ActionFormData() //Form that allows navigation to other forms
         .title("Welcome to Hunger Games Map Maker")
-        .button("Add a lobby")
         .button("Add a new map")
         .button('Edit a Map')
         .button("Delete a map")
@@ -133,21 +101,7 @@ world.afterEvents.itemUse.subscribe((event) => {
             if (response.canceled) {return};
             const selection = response.selection;
             switch(selection) {
-                case 0: 
-                const lobbyMaker = new MessageFormData() //Form that gives all lobby making items
-                .title('Welcome to lobby maker')
-                .body('To get Started Select Yes. Warning this will clear spaces in your hotbar!')
-                .button1('Yes Continue')
-                .button2('Close Form');
-
-                lobbyMaker.show(player).then(response => {
-                    if (response.canceled) {return}
-                    else if (response.selection === 0) {
-                        giveItems(player, lobbySettingItem)
-                        player.addTag('settingLobby')
-                    }
-                }); break;
-                case 1:
+                case 0:
                     const mapMaker = new MessageFormData() //Form That gives all map maker items to the player if they select yes
                     .title('Welcome to map maker')
                     .body('To get Started Select Yes. Warning This will clear your hotbar!')
@@ -163,11 +117,11 @@ world.afterEvents.itemUse.subscribe((event) => {
                     }
                     else if (response.selection === 1) {return};
                 }); break;
-                case 2:
+                case 1:
                     const mapEditorDir = new ModalFormData() //form that allows for navigation between precise or general edit mode. Allows for picking a map and item within the map to affect. 
                     .title('Welcome to map editor')
                     .header('Select the map to make changes to')
-                    .dropdown('Map', Map.getAllMapIds(), {defaultValueIndex: 0, tooltip: 'The map you wish to change'})
+                    .dropdown('Map', hungerGamesMap.getAllMapIds(), {defaultValueIndex: 0, tooltip: 'The map you wish to change'})
                     .dropdown('General mode or Precise mode', ['General mode', 'Precise Mode'], {tooltip: "General edit mode will give you the items needed to make a map and move your selected map to the cache to add more coordinates too. Precise mode will allow for instertion deletion or replacment of coordinates saved to the map.", defaultValueIndex: 0})
                     .dropdown('Map item to change', ['Spawns', 'Barriers', 'Chests', 'Doors'], {tooltip: "If the item to change you have selected is empty an error will occur. If this happens use general editor mode to add your coordinates in. If you are entering general edit mode this field is non applicable.", defaultValueIndex: 0})
                     .submitButton('Submit'); 
@@ -175,10 +129,10 @@ world.afterEvents.itemUse.subscribe((event) => {
                     mapEditorDir.show(player).then(response => {
                     if (world.getPlayers({tags: ['makingMap']}).length > 0 || world.getPlayers({tags: ['editingMap']}).length > 0) {return world.sendMessage('Someone is editing or making a map at this point in time. Please wait until they are finished. If you are sure this is not the case try completley restarting the world.')}
                     else if (response.canceled) {return}
-                    else if (Map.getAllMapIds()[0] === "No maps created") {return world.sendMessage('There are no maps to edit to get started visit the add a map section of this book.')};
+                    else if (hungerGamesMap.getAllMapIds()[0] === "No maps created") {return world.sendMessage('There are no maps to edit to get started visit the add a map section of this book.')};
                     player.addTag('editingMap')
                     const chosenIndex = response.formValues[1]
-                    const chosenMap = Map.allMaps[chosenIndex]
+                    const chosenMap = hungerGamesMap.allMaps[chosenIndex]
                     const mapId = chosenMap.name
                     putMapInCache(chosenMap)
                     const modeToEnter = response.formValues[2]
@@ -276,28 +230,28 @@ world.afterEvents.itemUse.subscribe((event) => {
                             })
                         }
                     }); break
-                    case 3:
+                    case 2:
                         const mapErase = new ModalFormData() //Form that allows for deletion of maps this form will erase maps from the worlds dynamic properties as well as the allMaps array in the Map Class 
                         .title('Map eraser')
                         .header('Select the map you wish to erase')
-                        .dropdown('Maps', Map.getAllMapIds())
+                        .dropdown('Maps', hungerGamesMap.getAllMapIds())
                         .submitButton('Delete Map'); 
 
                         mapErase.show(player).then(response => {
                         if (response.canceled) return;
                         const chosenMap = response.formValues[1]
-                        const MapId = Map.allMaps[chosenMap].name
+                        const MapId = hungerGamesMap.allMaps[chosenMap].name
                         world.setDynamicProperty(`Hunger Games: ${MapId}`)
-                        Map.allMaps.splice(chosenMap, 1)
+                        hungerGamesMap.allMaps.splice(chosenMap, 1)
                     }); break;
-                    case 4:
+                    case 3:
                     const tutorialform = new MessageFormData() //Explanation of how to use the system as well as importnant notes for filling out the map maker form
                     .title('How to use this addon')
                     .body('') //Need to rewrite the tutorial now that methods for making a map have changed.
                     .button1('Close'); 
 
                     tutorialform.show(player); break;
-                    case 5:
+                    case 4:
                     const credits = new MessageFormData() //credits for the Programmer and Map builder!
                     .title('Credits')
                     .body('This addon was made with much care and effort by me (Brandon) It is my intent that people will use this addon to create memories with their friends as well form new friendships!\nThe maps that come included with this addon were made with dedication and talent by my friend Richie. If this addon helps you in any way consider helping others with your craft! Thank you!')
@@ -311,7 +265,7 @@ world.afterEvents.itemUse.subscribe((event) => {
 
 
 
-    world.beforeEvents.playerInteractWithBlock.subscribe((event) => { //handles players editing a map with general mode or making a map.
+    world.beforeEvents.playerInteractWithBlock.subscribe(async (event) => { //handles players editing a map with general mode or making a map.
         if (event.itemStack === undefined) return;
         if (event.isFirstEvent === false) return;
         const player = event.player;
@@ -327,9 +281,11 @@ world.afterEvents.itemUse.subscribe((event) => {
                 mapMakerCache.barriers = []
                 mapMakerCache.chests.length = []
                 mapMakerCache.doors.length  = []
-                mapMakerCache.numOfTicks = 1200
+                mapMakerCache.numOfTicks = 12000
                 mapMakerCache.dimension = null
-                world.sendMessage('Cache cleared')
+                mapMakerCache.startPoint = null
+                mapMakerCache.endPoint = null
+                world.sendMessage('Cleared cache')
                 break;
                 case "b_minigames:set_name":
                     event.cancel = true
@@ -426,9 +382,9 @@ world.afterEvents.itemUse.subscribe((event) => {
                             world.sendMessage('You have not set a time for this Map or have left it as the default. The default of 10 minutes has been chosen if that is intentional you may ignore this message!')
                         }
                         const dataString = JSON.stringify(mapMakerCache)
-                        const createdMap = new Map(cachedName, dataString)
+                        const createdMap = new hungerGamesMap(cachedName, dataString)
                         createdMap.save()
-                        Map.allMaps.push(createdMap)
+                        hungerGamesMap.allMaps.push(createdMap)
                         system.run(() => {
                             if (player.hasTag('makingMap')) {
                                 player.removeTag('makingMap')
@@ -439,11 +395,32 @@ world.afterEvents.itemUse.subscribe((event) => {
                             takeItems(player, mapMakerItems)
                         })
                     break;
+                    case "b_minigames:point_setter":
+                        event.cancel = true
+                        if (player.isSneaking) {
+                            mapMakerCache.startPoint = block.location
+                        }
+                        else {
+                            mapMakerCache.endPoint = block.location
+                        }
+                        break;
                     case "b_minigames:confirm_edits":
                         event.cancel = true
                         mapMakerCache.dimension = player.dimension.id
                         if (cachedName.length === 0) {
                             return world.sendMessage('You must input a name for your map first!')
+                        }
+                        if (!mapMakerCache.startPoint) {
+                            return world.sendMessage('You must input a start point for this map')
+                        }
+                        if (!mapMakerCache.endPoint) {
+                            return world.sendMessage('You must input an end point for this map')
+                        }
+                        try {
+                            await world.tickingAreaManager.createTickingArea('mapTest', {from: mapMakerCache.startPoint, to: mapMakerCache.endPoint, dimension: world.getDimension(mapMakerCache.dimension)})
+                            world.tickingAreaManager.removeTickingArea('mapTest')
+                        } catch(error) {
+                            world.sendMessage('There was an error attempting to load your map. It may be too large! Please note that you are only aloted about 250 chuncks of space.')
                         }
                         if (mapMakerCache.barriers.length === 0) {
                             world.sendMessage('You have no barriers made for this Map if this is intentional you may ignore this message!')

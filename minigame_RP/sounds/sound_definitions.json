@@ -28,6 +28,14 @@
         "startSpectate": {
             "category": "neutral",
             "sounds": ["sounds/start_spectate"]
+        },
+        "barrierToolChangeMode": {
+            "category": "neutral",
+            "sounds": ["sounds/barrier_tool_change_mode"]
+        },
+        "barrierToolFail": {
+            "category": "neutral",
+            "sounds": ["sounds/barrier_tool_fail"]
         }
     }
 }
